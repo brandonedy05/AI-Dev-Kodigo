@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-primary-container":"#00422b","secondary-fixed-dim":"#bec6e0","surface-tint":"#006c49","surface-container-lowest":"#ffffff","surface-container-highest":"#d3e4fe","inverse-primary":"#4edea3","on-primary-fixed":"#002113","outline-variant":"#bbcabf","error":"#ba1a1a","on-tertiary":"#ffffff","on-surface":"#0b1c30","tertiary-container":"#e29100","background":"#f8f9ff","on-primary-fixed-variant":"#005236","surface-dim":"#cbdbf5","on-secondary-fixed":"#131b2e","surface":"#f8f9ff","tertiary-fixed":"#ffddb8","on-background":"#0b1c30","tertiary-fixed-dim":"#ffb95f","tertiary":"#855300","surface-bright":"#f8f9ff","secondary-fixed":"#dae2fd","surface-container":"#e5eeff","surface-container-low":"#eff4ff","primary-container":"#10b981","surface-variant":"#d3e4fe","on-secondary-container":"#5c647a","secondary-container":"#dae2fd","on-error":"#ffffff","error-container":"#ffdad6","on-secondary-fixed-variant":"#3f465c","inverse-on-surface":"#eaf1ff","on-surface-variant":"#3c4a42","on-secondary":"#ffffff","on-primary":"#ffffff","surface-container-high":"#dce9ff","primary":"#006c49","secondary":"#565e74","inverse-surface":"#213145","on-error-container":"#93000a","outline":"#6c7a71","on-tertiary-fixed-variant":"#653e00","primary-fixed-dim":"#4edea3","on-tertiary-container":"#523200","on-tertiary-fixed":"#2a1700","primary-fixed":"#6ffbbe"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{margin:"1.25rem","space-md":"0.75rem",gutter:"1rem","space-xs":"0.25rem","space-xl":"2rem","margin-screen":"1.5rem","space-sm":"0.5rem","gutter-compact":"0.5rem","space-lg":"1.25rem"},fontFamily:{"label-lg":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"display-xl":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"display-lg":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"numeric-total":["Plus Jakarta Sans"],"numeric-keypad":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"]},fontSize:{"label-lg":["15px",{lineHeight:"20px",letterSpacing:"0.01em",fontWeight:"700"}],"headline-md":["22px",{lineHeight:"28px",fontWeight:"600"}],"headline-sm":["18px",{lineHeight:"24px",fontWeight:"600"}],"display-xl":["48px",{lineHeight:"56px",letterSpacing:"-0.02em",fontWeight:"800"}],"headline-lg":["28px",{lineHeight:"36px",letterSpacing:"-0.01em",fontWeight:"700"}],"body-md":["14px",{lineHeight:"20px",fontWeight:"400"}],"body-sm":["12px",{lineHeight:"16px",fontWeight:"400"}],"display-lg":["36px",{lineHeight:"44px",letterSpacing:"-0.02em",fontWeight:"700"}],"label-md":["13px",{lineHeight:"16px",letterSpacing:"0.01em",fontWeight:"600"}],"label-sm":["11px",{lineHeight:"14px",letterSpacing:"0.02em",fontWeight:"600"}],"numeric-total":["40px",{lineHeight:"48px",letterSpacing:"-0.03em",fontWeight:"800"}],"numeric-keypad":["24px",{lineHeight:"32px",fontWeight:"700"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"500"}]}}}}</script></head><body class="bg-surface font-body-md text-on-surface antialiased min-h-screen"><aside class="fixed left-0 top-0 h-screen w-72 bg-surface-container-lowest z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="p-space-lg flex items-center gap-space-md"><img alt="Mi Tiendita Fácil Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ALJJyrBVukMWQ7GdrFMilpe3zIJZPnduvrFIxGkjHvOkUevHfGH0kveZw_STrGvt-NPMG2QmY9zXglS_4ID6qVrJHwIFh2qGZIrrsz2smNXvL9d0VHk0Ruz1kEHcdD3XqgHr1TvD6ofMrPCdr4TKj7qYUYtQpINkkAdVodcALupiJSahfVpC8X3mLchWveBUc8BIu87X2FHdxj0ljRPINjDtswWVgFc7xRk4HGxrVjR6jG4A"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Mi Tiendita</span><span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider">Punto de Venta</span></div></div><div class="px-space-lg pb-space-md"><div class="flex items-center gap-space-sm px-space-md py-space-xs rounded-lg bg-surface-container-low"><span class="w-2.5 h-2.5 rounded-full bg-primary-container animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface font-semibold">En Línea / Caja 01</span></div></div><nav class="flex flex-col gap-1 px-space-md mt-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-bold rounded-lg shadow-sm"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="ventas" href="#"><span class="material-symbols-outlined text-[22px]">point_of_sale</span><span class="font-label-lg text-label-lg">Ventas</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="catalogo-productos" href="#"><span class="material-symbols-outlined text-[22px]">inventory_2</span><span class="font-label-lg text-label-lg">Catálogo / Productos</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="clientes" href="#"><span class="material-symbols-outlined text-[22px]">groups</span><span class="font-label-lg text-label-lg">Clientes</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="arqueo-caja" href="#"><span class="material-symbols-outlined text-[22px]">payments</span><span class="font-label-lg text-label-lg">Arqueo y Caja</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="historial-tickets" href="#"><span class="material-symbols-outlined text-[22px]">receipt_long</span><span class="font-label-lg text-label-lg">Historial de Tickets</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="reportes-estadisticas" href="#"><span class="material-symbols-outlined text-[22px]">analytics</span><span class="font-label-lg text-label-lg">Reportes y Estadísticas</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="ajustes" href="#"><span class="material-symbols-outlined text-[22px]">settings</span><span class="font-label-lg text-label-lg">Ajustes</span></a></nav></div><div class="p-space-md bg-surface-container-lowest"><div class="flex items-center justify-between p-space-sm rounded-xl bg-surface-container-low"><div class="flex items-center gap-space-sm overflow-hidden"><img alt="Profile" class="w-8 h-8 rounded-full object-cover shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuE9H8A8deA8s8dizj7XYqXUI6BWTpF5M31C-WQWjfMSZqsUp90ki63pB-wpmWGm2EEUXBuJZ6lF2dIXatT_grFaqffqWD0CHkvNNZSH8C0dgLqrkSYEBW_PPUAgssUF3kscp88Ed7iPOICj_dROsFtUbdcZrWadL8TBFvczHQ8ZUbl6TBXsmkVK-QJSsDNg24hCOuqHKUl1MDKM3KXKzyWDRoraQ5MfCOj4uWEb6P"/><div class="flex flex-col truncate"><span class="font-label-sm text-label-sm text-on-surface truncate font-bold">Sofía Mendoza</span><span class="font-body-sm text-body-sm text-on-surface-variant truncate">Cajero Principal</span></div></div><button class="p-space-xs rounded-lg text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-colors shrink-0 flex items-center justify-center" title="Bloquear o Cerrar Sesión" type="button"><span class="material-symbols-outlined text-[20px]">lock</span></button></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/90 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)] flex items-center justify-between px-space-xl"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm bg-surface-container-lowest px-space-md py-space-xs rounded-lg shadow-sm"><span class="material-symbols-outlined text-[18px] text-primary">storefront</span><span class="font-label-md text-label-md text-on-surface font-semibold">Sucursal Centro</span><span class="material-symbols-outlined text-[16px] text-on-surface-variant">expand_more</span></div><div class="hidden xl:flex items-center gap-space-sm"><div class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container rounded"><span class="font-label-sm text-label-sm font-bold text-on-surface">F1</span><span class="font-body-sm text-body-sm text-on-surface-variant">Buscar</span></div><div class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container rounded"><span class="font-label-sm text-label-sm font-bold text-primary">F2</span><span class="font-body-sm text-body-sm text-on-surface-variant">Cobrar</span></div><div class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container rounded"><span class="font-label-sm text-label-sm font-bold text-tertiary">F4</span><span class="font-body-sm text-body-sm text-on-surface-variant">Espera</span></div></div></div><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">schedule</span><span class="font-label-md text-label-md text-on-surface">14:32:05 • 24 Oct 2024</span></div><button class="p-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors flex items-center justify-center" title="Pantalla Completa" type="button"><span class="material-symbols-outlined text-[22px]">fullscreen</span></button><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuE9H8A8deA8s8dizj7XYqXUI6BWTpF5M31C-WQWjfMSZqsUp90ki63pB-wpmWGm2EEUXBuJZ6lF2dIXatT_grFaqffqWD0CHkvNNZSH8C0dgLqrkSYEBW_PPUAgssUF3kscp88Ed7iPOICj_dROsFtUbdcZrWadL8TBFvczHQ8ZUbl6TBXsmkVK-QJSsDNg24hCOuqHKUl1MDKM3KXKzyWDRoraQ5MfCOj4uWEb6P"/></div></header><main class="relative pt-16 w-full min-h-screen bg-surface"><div class="flex flex-col w-full">
+<!-- Dynamic active state sync script for App Shell Sidebar -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const activeLink = document.querySelector('aside nav a[data-path="clientes"]');
+      if (activeLink) {
+        document.querySelectorAll('aside nav a').forEach(a => {
+          a.className = "flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all";
+        });
+        activeLink.className = "flex items-center gap-space-md px-space-md py-space-sm bg-primary-container text-on-primary-container font-bold rounded-lg shadow-sm transition-all";
+      }
+    });
+  </script>
+<!-- Main View Container -->
+<div class="p-space-lg lg:p-space-xl flex flex-col gap-space-lg max-w-[1720px] mx-auto w-full">
+<!-- Top Action & Sub-Bar: Module context & Primary actions -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs text-primary font-label-md">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+<span class="uppercase tracking-wider font-bold">Módulo de Facturación &amp; DTE El Salvador</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Directorio de Clientes</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Gestión de sujetos pasivos, contribuyentes autorizados por DGII / Ministerio de Hacienda y consumidores finales.</p>
+</div>
+<!-- Action Cluster -->
+<div class="flex items-center gap-space-sm flex-wrap">
+<div class="hidden sm:flex items-center gap-space-xs px-space-md py-space-xs bg-surface-container-low rounded-lg shadow-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[20px]">account_balance</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface font-bold">IVA Vigente: 13%</span>
+<span class="font-body-sm text-body-sm text-secondary">Normativa DTE El Salvador</span>
+</div>
+</div>
+<button class="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-lowest text-on-surface shadow-sm hover:bg-surface-container transition-all active:scale-98" type="button">
+<span class="material-symbols-outlined text-[20px] text-secondary">download</span>
+<span class="font-label-lg text-label-lg">Exportar Lista</span>
+</button>
+<button class="flex items-center gap-space-sm px-space-lg py-space-sm rounded-xl bg-primary-container text-on-primary-container font-headline-sm text-headline-sm shadow-md hover:brightness-105 active:scale-95 transition-all" id="open-client-modal-btn" type="button">
+<span class="material-symbols-outlined text-[24px]">person_add</span>
+<span>+ Nuevo Cliente</span>
+<span class="text-xs px-2 py-0.5 rounded bg-on-primary-container/20 text-on-primary-container font-mono font-bold ml-1">F2</span>
+</button>
+</div>
+</div>
+<!-- Fiscal & Operational Metrics (KPIs) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-space-md">
+<!-- KPI 1 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant">Total Clientes Activos</span>
+<span class="font-display-lg text-display-lg text-on-surface mt-1">142</span>
+<span class="font-body-sm text-body-sm text-primary flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+            +8 registrados este mes
+          </span>
+</div>
+<div class="w-14 h-14 rounded-xl bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[30px]">group</span>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant">Consumidores Finales</span>
+<span class="font-display-lg text-display-lg text-on-surface mt-1">118</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">badge</span>
+            Con DUI / Pasaporte registrado
+          </span>
+</div>
+<div class="w-14 h-14 rounded-xl bg-surface-container-low flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[30px]">person</span>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant">Contribuyentes (CCF)</span>
+<span class="font-display-lg text-display-lg text-primary mt-1">24</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">receipt</span>
+            Con NRC y Tarjeta de IVA
+          </span>
+</div>
+<div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[30px]">domain</span>
+</div>
+</div>
+<!-- KPI 4 -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant">Agentes de Retención 1%</span>
+<span class="font-display-lg text-display-lg text-tertiary mt-1">6</span>
+<span class="font-body-sm text-body-sm text-tertiary flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">security</span>
+            Designados por Min. Hacienda
+          </span>
+</div>
+<div class="w-14 h-14 rounded-xl bg-tertiary-fixed flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[30px]">policy</span>
+</div>
+</div>
+</div>
+<!-- Filter Bar & Search Engine -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-space-md">
+<!-- Search Input -->
+<div class="relative w-full md:w-96 flex items-center">
+<span class="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[22px]">search</span>
+<input class="w-full h-12 pl-12 pr-12 rounded-lg bg-surface-container-low text-on-surface font-body-md placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all" placeholder="Buscar por Nombre, DUI, NIT o NRC..." type="text"/>
+<kbd class="absolute right-3 px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-mono text-[11px] font-bold">F1</kbd>
+</div>
+<!-- Segmented Category Filters -->
+<div class="flex items-center gap-space-xs overflow-x-auto w-full md:w-auto p-1 bg-surface-container-low rounded-lg">
+<button class="px-space-md py-space-xs rounded font-label-md text-label-md bg-inverse-surface text-inverse-on-surface shadow-sm font-semibold transition-all" type="button">Todos (142)</button>
+<button class="px-space-md py-space-xs rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" type="button">Consumidor Final (118)</button>
+<button class="px-space-md py-space-xs rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" type="button">Contribuyentes CCF (24)</button>
+<button class="px-space-md py-space-xs rounded font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" type="button">Con Crédito Vigente (9)</button>
+</div>
+</div>
+<!-- Clients Table / Directory Data Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md uppercase tracking-wider">
+<th class="py-space-md px-space-lg">Cliente / Razón Social</th>
+<th class="py-space-md px-space-md">DUI / NIT / NRC</th>
+<th class="py-space-md px-space-md">Ubicación (El Salvador)</th>
+<th class="py-space-md px-space-md">Clasificación Fiscal</th>
+<th class="py-space-md px-space-md">Contacto &amp; DTE</th>
+<th class="py-space-md px-space-md text-right">Límite Crédito</th>
+<th class="py-space-md px-space-lg text-center">Acciones</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md divide-y-0 text-on-surface">
+<!-- Row 1: Supertienda El Sol (Gran Contribuyente CCF) -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-headline-sm font-bold shrink-0">
+                    ES
+                  </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-lg text-label-lg font-bold truncate">Supertienda El Sol S.A. de C.V.</span>
+<span class="font-body-sm text-body-sm text-secondary truncate">Giro: Venta al por menor de abarrotes</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-mono font-bold text-on-surface">NRC: 145920-1</span>
+<span class="font-body-sm text-body-sm font-mono text-on-surface-variant">NIT: 0614-120598-102-4</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold">San Salvador Centro</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Distrito San Salvador • Calle Arce #412</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-1 flex-wrap">
+<span class="px-2 py-0.5 rounded-full bg-primary/15 text-primary font-label-sm font-bold text-[11px]">Contribuyente CCF</span>
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-tertiary font-label-sm font-bold text-[11px]">Retención 1%</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="flex items-center gap-1 font-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-primary">mail</span>
+                    facturacion@elsol.com.sv
+                  </span>
+<span class="flex items-center gap-1 font-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary-container">chat</span>
+                    +503 2245-8900
+                  </span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="font-label-lg text-label-lg font-mono font-bold text-on-surface">$1,500.00</span>
+<span class="block font-body-sm text-body-sm text-secondary">30 días plazo</span>
+</td>
+<td class="py-space-md px-space-lg text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors" title="Editar Registro" type="button">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Nueva Venta a este Cliente" type="button">
+<span class="material-symbols-outlined text-[20px]">shopping_cart_checkout</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Juan Carlos Pérez (Consumidor Final) -->
+<tr class="bg-surface-container-lowest hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high text-on-surface-variant flex items-center justify-center font-headline-sm font-bold shrink-0">
+                    JP
+                  </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-lg text-label-lg font-bold truncate">Juan Carlos Pérez Melgar</span>
+<span class="font-body-sm text-body-sm text-secondary truncate">Particular / Empleado</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-mono font-bold text-on-surface">DUI: 04512984-1</span>
+<span class="font-body-sm text-body-sm text-primary flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                    Homologado
+                  </span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold">La Libertad Sur</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Distrito Santa Tecla • Res. Pinares Suiza #8</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm font-bold text-[11px]">Consumidor Final</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="flex items-center gap-1 font-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-primary">mail</span>
+                    jperez.melgar@gmail.com
+                  </span>
+<span class="flex items-center gap-1 font-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary-container">chat</span>
+                    +503 7234-9811
+                  </span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="font-label-lg text-label-lg font-mono font-bold text-on-surface">$100.00</span>
+<span class="block font-body-sm text-body-sm text-secondary">Fíado Quincenal</span>
+</td>
+<td class="py-space-md px-space-lg text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors" title="Editar Registro" type="button">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Nueva Venta a este Cliente" type="button">
+<span class="material-symbols-outlined text-[20px]">shopping_cart_checkout</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Farmacia La Buena Salud (Contribuyente) -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-headline-sm font-bold shrink-0">
+                    FS
+                  </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-lg text-label-lg font-bold truncate">Farmacia La Buena Salud S.A. de C.V.</span>
+<span class="font-body-sm text-body-sm text-secondary truncate">Giro: Venta de productos farmacéuticos y medicinales</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-mono font-bold text-on-surface">NRC: 301294-8</span>
+<span class="font-body-sm text-body-sm font-mono text-on-surface-variant">NIT: 0614-220115-103-9</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold">Santa Ana Centro</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Distrito Santa Ana • Av. Independencia Sur #14</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-1 flex-wrap">
+<span class="px-2 py-0.5 rounded-full bg-primary/15 text-primary font-label-sm font-bold text-[11px]">Contribuyente CCF</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="flex items-center gap-1 font-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-primary">mail</span>
+                    cuentas@labuenasalud.com.sv
+                  </span>
+<span class="flex items-center gap-1 font-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary-container">chat</span>
+                    +503 2440-1288
+                  </span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="font-label-lg text-label-lg font-mono font-bold text-on-surface">$500.00</span>
+<span class="block font-body-sm text-body-sm text-secondary">15 días plazo</span>
+</td>
+<td class="py-space-md px-space-lg text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors" title="Editar Registro" type="button">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Nueva Venta a este Cliente" type="button">
+<span class="material-symbols-outlined text-[20px]">shopping_cart_checkout</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: María Elena Vásquez (Consumidor Final) -->
+<tr class="bg-surface-container-lowest hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high text-on-surface-variant flex items-center justify-center font-headline-sm font-bold shrink-0">
+                    MV
+                  </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-lg text-label-lg font-bold truncate">Licda. María Elena Vásquez Rivera</span>
+<span class="font-body-sm text-body-sm text-secondary truncate">Servicios Profesionales / Docente</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-mono font-bold text-on-surface">DUI: 01893452-7</span>
+<span class="font-body-sm text-body-sm text-primary flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                    Homologado
+                  </span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold">San Salvador Centro</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Distrito Mejicanos • Col. Zacamil Edif. 12 #4</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm font-bold text-[11px]">Consumidor Final</span>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="flex items-center gap-1 font-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-primary">mail</span>
+                    elena.vasquez@outlook.com
+                  </span>
+<span class="flex items-center gap-1 font-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary-container">chat</span>
+                    +503 7981-4450
+                  </span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="font-label-lg text-label-lg font-mono font-bold text-secondary">$0.00</span>
+<span class="block font-body-sm text-body-sm text-secondary">Sin crédito</span>
+</td>
+<td class="py-space-md px-space-lg text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors" title="Editar Registro" type="button">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Nueva Venta a este Cliente" type="button">
+<span class="material-symbols-outlined text-[20px]">shopping_cart_checkout</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination & Table Status Footer -->
+<div class="p-space-md bg-surface-container-low flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Mostrando 4 de 142 clientes registrados en el sistema</span>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container font-label-sm transition-all disabled:opacity-50" disabled="" type="button">Anterior</button>
+<span class="px-2 py-1 font-label-sm font-bold text-on-surface">Página 1 de 36</span>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container font-label-sm shadow-sm transition-all" type="button">Siguiente</button>
+</div>
+</div>
+</div>
+</div>
+<!-- MODAL CRUD "REGISTRAR / EDITAR CLIENTE" -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-inverse-surface/50 backdrop-blur-sm transition-opacity duration-200" id="client-crud-modal">
+<div class="relative w-full max-w-4xl max-h-[942px] flex flex-col bg-surface-container-lowest rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+<!-- Modal Header -->
+<div class="px-space-xl py-space-lg bg-surface-container-low flex items-center justify-between shrink-0">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-primary-container text-on-primary-container flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[28px]">person_add</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<h2 class="font-headline-md text-headline-md text-on-surface">Registrar Nuevo Cliente</h2>
+<span class="px-2 py-0.5 rounded bg-primary/10 text-primary font-label-sm font-bold text-[11px] uppercase tracking-wide">DGII El Salvador</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Complete los datos obligatorios según la Ley de Impuesto a la Transferencia de Bienes Muebles y a la Prestación de Servicios (IVA).</p>
+</div>
+</div>
+<button class="w-10 h-10 rounded-xl text-on-surface-variant hover:bg-error-container hover:text-on-error-container transition-all flex items-center justify-center" id="close-modal-x" title="Cerrar ventana (ESC)" type="button">
+<span class="material-symbols-outlined text-[24px]">close</span>
+</button>
+</div>
+<!-- Segmented Control: Fiscal Classification Selector -->
+<div class="px-space-xl pt-space-lg pb-space-sm bg-surface-container-lowest shrink-0">
+<div class="p-1.5 bg-surface-container-low rounded-xl grid grid-cols-2 gap-2 shadow-inner">
+<button class="flex items-center justify-center gap-space-sm py-space-sm px-space-md rounded-lg bg-surface-container-lowest text-on-surface shadow-sm font-label-lg text-label-lg font-bold transition-all" id="tab-consumidor" onclick="switchCustomerType('consumidor')" type="button">
+<span class="material-symbols-outlined text-[22px] text-primary">person</span>
+<span>Consumidor Final (Factura Electrónica)</span>
+</button>
+<button class="flex items-center justify-center gap-space-sm py-space-sm px-space-md rounded-lg text-on-surface-variant hover:text-on-surface font-label-lg text-label-lg font-bold transition-all" id="tab-contribuyente" onclick="switchCustomerType('contribuyente')" type="button">
+<span class="material-symbols-outlined text-[22px]">domain</span>
+<span>Contribuyente (Crédito Fiscal - CCF)</span>
+</button>
+</div>
+</div>
+<!-- Scrollable Form Body -->
+<form class="overflow-y-auto px-space-xl py-space-md flex flex-col gap-space-lg flex-1" id="client-form">
+<!-- SECTION 1: IDENTIFICACIÓN PRINCIPAL SEGÚN TIPO -->
+<!-- CASE A: CONSUMIDOR FINAL FIELDS -->
+<div class="flex flex-col gap-space-md" id="view-consumidor">
+<div class="flex items-center gap-2 text-primary font-label-md">
+<span class="material-symbols-outlined text-[18px]">badge</span>
+<span class="font-bold uppercase tracking-wider">Identificación del Consumidor</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Selector País -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold">País de Emisión *</label>
+<div class="relative">
+<select class="w-full h-12 px-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none appearance-none cursor-pointer" id="cf-pais" onchange="togglePaisExtranjero(this.value)">
+<option selected="" value="SV">El Salvador (Nacional)</option>
+<option value="EXT">Otro País (Extranjero)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3.5 text-on-surface-variant pointer-events-none text-[20px]">arrow_drop_down</span>
+</div>
+</div>
+<!-- Doc Nacional: DUI / NIT Homologado -->
+<div class="flex flex-col gap-1 md:col-span-2" id="cf-doc-sv-wrap">
+<div class="flex items-center justify-between">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold">DUI o NIT Homologado *</label>
+<span class="font-label-sm text-primary flex items-center gap-1 font-bold text-[11px]">
+<span class="material-symbols-outlined text-[14px]">verified</span> Formato SV: 8 dígitos + guion
+                </span>
+</div>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[20px]">fingerprint</span>
+<input class="w-full h-12 pl-11 pr-28 rounded-lg bg-surface-container-low text-on-surface font-mono font-bold text-headline-sm focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none" id="cf-dui" maxlength="10" placeholder="00000000-0" type="text" value="03456789-2"/>
+<div class="absolute right-3 px-2 py-1 bg-primary/10 text-primary rounded font-label-sm font-bold text-[11px]">
+                  VÁLIDO
+                </div>
+</div>
+</div>
+<!-- Doc Extranjero (Oculto por defecto) -->
+<div class="hidden flex-col gap-1 md:col-span-2" id="cf-doc-ext-wrap">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold">Pasaporte / Doc. de Identidad Extranjero *</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[20px]">public</span>
+<input class="w-full h-12 pl-11 pr-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none" placeholder="Número de Pasaporte o Carnet de Residente" type="text"/>
+</div>
+</div>
+</div>
+<!-- Nombre Completo según DUI -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold">Nombre Completo según Documento de Identidad *</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[20px]">person</span>
+<input class="w-full h-12 pl-11 pr-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md font-semibold focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none" placeholder="Ej: Carlos Roberto Hernández Gómez" type="text" value="Carlos Roberto Hernández Gómez"/>
+</div>
+</div>
+</div>
+<!-- CASE B: CONTRIBUYENTE (CCF) FIELDS -->
+<div class="hidden flex-col gap-space-md" id="view-contribuyente">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-primary font-label-md">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span class="font-bold uppercase tracking-wider">Datos Fiscales - Tarjeta de IVA (Crédito Fiscal)</span>
+</div>
+<span class="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-label-sm font-bold text-[11px] flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">gavel</span> Requisito DTE Hacienda
+            </span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- NRC -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold">NRC (Número de Registro de Contribuyente) *</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[20px]">numbers</span>
+<input class="w-full h-12 pl-11 pr-space-md rounded-lg bg-surface-container-low text-on-surface font-mono font-bold text-headline-sm focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none" maxlength="10" placeholder="Ej: 284910-3" type="text"/>
+</div>
+</div>
+<!-- NIT de la Empresa -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold">NIT o DUI Homologado del Contribuyente *</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[20px]">badge</span>
+<input class="w-full h-12 pl-11 pr-space-md rounded-lg bg-surface-container-low text-on-surface font-mono font-bold text-headline-sm focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none" placeholder="0614-010190-101-2 ó DUI homologado" type="text"/>
+</div>
+</div>
+</div>
+<!-- Razón Social -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold">Nombre o Razón Social (Según Tarjeta de IVA) *</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[20px]">corporate_fare</span>
+<input class="w-full h-12 pl-11 pr-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md font-bold focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none" placeholder="Ej: Distribuidora Cuscatlán S.A. de C.V." type="text"/>
+</div>
+</div>
+<!-- Giro Comercial / Actividad Económica -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold">Actividad Económica (Giro Oficial según MH) *</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[20px]">store</span>
+<input class="w-full h-12 pl-11 pr-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none" list="giros-list" placeholder="47110 - Venta al por menor en comercios no especializados..." type="text"/>
+<datalist id="giros-list">
+<option value="47110 - Venta al por menor en comercios no especializados con surtido de alimentos"></option>
+<option value="47211 - Venta al por menor de carnes y productos cárnicos"></option>
+<option value="47721 - Venta al por menor de productos farmacéuticos y medicinales"></option>
+<option value="46900 - Venta al por mayor no especializada"></option>
+<option value="56101 - Restaurantes y servicios móviles de comidas"></option>
+<option value="69200 - Actividades de contabilidad, teneduría de libros y auditoría"></option>
+</datalist>
+</div>
+</div>
+<!-- Tratamiento Especial de IVA: Percepción / Retención 1% -->
+<div class="p-space-md bg-surface-container-low rounded-xl flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<!-- Switch Percepción 1% -->
+<label class="flex items-center gap-space-sm cursor-pointer w-full sm:w-1/2 p-2 rounded-lg bg-surface-container-lowest">
+<input class="w-5 h-5 accent-primary rounded cursor-pointer" type="checkbox"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold">Aplica Percepción 1%</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Cliente es Agente de Percepción</span>
+</div>
+</label>
+<!-- Switch Retención 1% -->
+<label class="flex items-center gap-space-sm cursor-pointer w-full sm:w-1/2 p-2 rounded-lg bg-surface-container-lowest">
+<input checked="" class="w-5 h-5 accent-primary rounded cursor-pointer" type="checkbox"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold">Aplica Retención 1%</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Gran Contribuyente designado por MH</span>
+</div>
+</label>
+</div>
+</div>
+<!-- SECTION 2: DIRECCIÓN Y REFORMA TERRITORIAL DE EL SALVADOR -->
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-primary font-label-md">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="font-bold uppercase tracking-wider">Ubicación Territorial (Ley Especial de Reestructuración Municipal)</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary">44 Municipios / 262 Distritos</span>
+</div>
+<!-- Triada Geográfica: Departamento - Municipio - Distrito -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Departamento -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold">Departamento *</label>
+<div class="relative">
+<select class="w-full h-12 px-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none appearance-none cursor-pointer" id="sv-depto">
+<option selected="" value="SS">San Salvador</option>
+<option value="LL">La Libertad</option>
+<option value="SA">Santa Ana</option>
+<option value="SM">San Miguel</option>
+<option value="SO">Sonsonate</option>
+<option value="AH">Ahuachapán</option>
+<option value="US">Usulután</option>
+<option value="LP">La Paz</option>
+<option value="CU">Cuscatlán</option>
+<option value="CH">Chalatenango</option>
+<option value="CA">Cabañas</option>
+<option value="SV">San Vicente</option>
+<option value="MO">Morazán</option>
+<option value="UN">La Unión</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3.5 text-on-surface-variant pointer-events-none text-[20px]">arrow_drop_down</span>
+</div>
+</div>
+<!-- Municipio -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold">Municipio *</label>
+<div class="relative">
+<select class="w-full h-12 px-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none appearance-none cursor-pointer" id="sv-muni">
+<option selected="" value="SSC">San Salvador Centro</option>
+<option value="SSE">San Salvador Este</option>
+<option value="SSO">San Salvador Oeste</option>
+<option value="SSN">San Salvador Norte</option>
+<option value="SSS">San Salvador Sur</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3.5 text-on-surface-variant pointer-events-none text-[20px]">arrow_drop_down</span>
+</div>
+</div>
+<!-- Distrito -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold">Distrito *</label>
+<div class="relative">
+<select class="w-full h-12 px-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none appearance-none cursor-pointer" id="sv-dist">
+<option selected="" value="SS">Distrito de San Salvador</option>
+<option value="MEJ">Distrito de Mejicanos</option>
+<option value="AYU">Distrito de Ayutuxtepeque</option>
+<option value="CUS">Distrito de Cuscatancingo</option>
+<option value="CD">Distrito de Ciudad Delgado</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3.5 text-on-surface-variant pointer-events-none text-[20px]">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Dirección Exacta -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold">Dirección Detallada (Calle, Polígono, Pasaje, Número de Casa o Local) *</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[20px]">home_pin</span>
+<input class="w-full h-12 pl-11 pr-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none" placeholder="Ej: Col. Escalón, Calle El Mirador, Pasaje Los Pinos #14" type="text" value="Col. Escalón, Calle El Mirador, Pasaje Los Pinos #14"/>
+</div>
+</div>
+</div>
+<!-- SECTION 3: DATOS DE CONTACTO PARA FACTURACIÓN ELECTRÓNICA & CONDICIONES COMERCIALES -->
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center gap-2 text-primary font-label-md">
+<span class="material-symbols-outlined text-[18px]">forward_to_inbox</span>
+<span class="font-bold uppercase tracking-wider">Contacto &amp; Envío de DTE (Factura / CCF)</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Correo Electrónico DTE -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold">Correo Electrónico (Para DTE JSON/PDF) *</label>
+<span class="font-label-sm text-secondary font-mono text-[11px]">Obligatorio DTE</span>
+</div>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[20px]">email</span>
+<input class="w-full h-12 pl-11 pr-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none" placeholder="cliente@correo.com" type="email" value="carlos.hernandez@empresa.sv"/>
+</div>
+</div>
+<!-- Teléfono / WhatsApp -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant font-bold">Teléfono / WhatsApp (Notificaciones de Cobro)</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-space-md text-primary-container text-[20px]">phone</span>
+<input class="w-full h-12 pl-11 pr-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none" placeholder="+503 7000-0000" type="text" value="+503 7845-1234"/>
+</div>
+</div>
+</div>
+<!-- Límite de Crédito / Fíado en Tienda -->
+<div class="p-space-md bg-surface-container-low rounded-xl grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface font-bold">Límite de Crédito / Fíado (USD $)</label>
+<div class="relative flex items-center">
+<span class="font-bold text-on-surface-variant absolute left-space-md text-[16px]">$</span>
+<input class="w-full h-11 pl-8 pr-space-md rounded-lg bg-surface-container-lowest text-on-surface font-mono font-bold text-headline-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="0.00" step="0.01" type="number" value="150.00"/>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Límite rotativo de cuentas por cobrar.</span>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface font-bold">Días Plazo para Pago</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[20px]">calendar_today</span>
+<input class="w-full h-11 pl-11 pr-space-md rounded-lg bg-surface-container-lowest text-on-surface font-mono font-bold text-headline-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="0" type="number" value="15"/>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Ej: 15 días (quincena) o 30 días crédito comercial.</span>
+</div>
+</div>
+</div>
+</form>
+<!-- Modal Action Buttons Footer -->
+<div class="px-space-xl py-space-md bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-space-md shrink-0">
+<div class="flex items-center gap-space-sm text-on-surface-variant w-full sm:w-auto">
+<span class="material-symbols-outlined text-[18px]">keyboard</span>
+<span class="font-body-sm text-body-sm">Presiona <kbd class="px-1.5 py-0.5 rounded bg-surface-container font-mono text-[11px] font-bold">ESC</kbd> para salir sin guardar</span>
+</div>
+<div class="flex items-center gap-space-md w-full sm:w-auto justify-end">
+<button class="px-space-lg py-space-sm rounded-xl text-on-surface font-label-lg hover:bg-surface-container transition-all" id="cancel-modal-btn" type="button">
+            Cancelar <span class="text-xs text-secondary font-mono">[ESC]</span>
+</button>
+<button class="hidden md:flex items-center gap-2 px-space-lg py-space-sm rounded-xl bg-surface-container-high text-on-surface font-label-lg hover:bg-surface-container transition-all" id="save-and-invoice-btn" type="button">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+<span>Guardar y Facturar</span>
+<span class="text-xs text-secondary font-mono">[Ctrl+Enter]</span>
+</button>
+<button class="flex items-center gap-2 px-space-xl py-space-sm rounded-xl bg-primary-container text-on-primary-container font-headline-sm text-headline-sm shadow-md hover:brightness-105 active:scale-95 transition-all" id="save-client-btn" type="button">
+<span class="material-symbols-outlined text-[22px]">check</span>
+<span>Guardar Cliente</span>
+<span class="text-xs bg-on-primary-container/20 px-2 py-0.5 rounded font-mono font-bold">[F2]</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Inline Script for Client Modal Interactions & Keyboard Ergonomics -->
+<script>
+    function switchCustomerType(type) {
+      const tabConsumidor = document.getElementById('tab-consumidor');
+      const tabContribuyente = document.getElementById('tab-contribuyente');
+      const viewConsumidor = document.getElementById('view-consumidor');
+      const viewContribuyente = document.getElementById('view-contribuyente');
+
+      if (type === 'consumidor') {
+        tabConsumidor.className = "flex items-center justify-center gap-space-sm py-space-sm px-space-md rounded-lg bg-surface-container-lowest text-on-surface shadow-sm font-label-lg text-label-lg font-bold transition-all";
+        tabContribuyente.className = "flex items-center justify-center gap-space-sm py-space-sm px-space-md rounded-lg text-on-surface-variant hover:text-on-surface font-label-lg text-label-lg font-bold transition-all";
+        viewConsumidor.classList.remove('hidden');
+        viewContribuyente.classList.add('hidden');
+      } else {
+        tabContribuyente.className = "flex items-center justify-center gap-space-sm py-space-sm px-space-md rounded-lg bg-surface-container-lowest text-on-surface shadow-sm font-label-lg text-label-lg font-bold transition-all";
+        tabConsumidor.className = "flex items-center justify-center gap-space-sm py-space-sm px-space-md rounded-lg text-on-surface-variant hover:text-on-surface font-label-lg text-label-lg font-bold transition-all";
+        viewContribuyente.classList.remove('hidden');
+        viewConsumidor.classList.add('hidden');
+      }
+    }
+
+    function togglePaisExtranjero(countryVal) {
+      const svDoc = document.getElementById('cf-doc-sv-wrap');
+      const extDoc = document.getElementById('cf-doc-ext-wrap');
+      if (countryVal === 'EXT') {
+        svDoc.classList.add('hidden');
+        extDoc.classList.remove('hidden');
+        extDoc.classList.add('flex');
+      } else {
+        extDoc.classList.add('hidden');
+        extDoc.classList.remove('flex');
+        svDoc.classList.remove('hidden');
+      }
+    }
+
+    // Modal display control
+    const modal = document.getElementById('client-crud-modal');
+    const openBtn = document.getElementById('open-client-modal-btn');
+    const closeBtnX = document.getElementById('close-modal-x');
+    const cancelBtn = document.getElementById('cancel-modal-btn');
+    const saveBtn = document.getElementById('save-client-btn');
+
+    function closeModal() {
+      if (modal) modal.classList.add('hidden');
+    }
+    function openModal() {
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    if (openBtn) openBtn.addEventListener('click', openModal);
+    if (closeBtnX) closeBtnX.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => {
+        alert('¡Cliente registrado exitosamente bajo la normativa DTE del Ministerio de Hacienda!');
+        closeModal();
+      });
+    }
+
+    // POS Hotkeys (F2: Save / Open, ESC: Close)
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      } else if (e.key === 'F2') {
+        e.preventDefault();
+        if (modal && modal.classList.contains('hidden')) {
+          openModal();
+        } else {
+          saveBtn.click();
+        }
+      }
+    });
+  </script>
+</div></main></div>
+</body></html>
