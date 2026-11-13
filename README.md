@@ -30,3 +30,4 @@ El sistema de diseño está documentado en detalle en [`docs/DESIGN_SYSTEM.md`](
   - **Error (`#EF4444` / `#BA1A1A` — Crimson):** Anulación de ventas, eliminación de líneas y alertas de inventario agotado.
 - **Layout:**
   - División fija 65% catálogo / 35% dock de ticket activo con botón de cobro persistente.
+
