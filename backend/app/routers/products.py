@@ -1,6 +1,10 @@
+import base64
+import binascii
+from pathlib import Path
 from typing import Optional
+from uuid import uuid4
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import Session
 
 from app.core.database import get_session
@@ -9,12 +13,55 @@ from app.schemas.product import (
     CategoryCreate,
     CategoryRead,
     ProductCreate,
+    ProductImageUploadRequest,
+    ProductImageUploadResponse,
     ProductRead,
     ProductUpdate,
 )
 from app.services import product_service
 
 router = APIRouter(tags=["Catálogo y Productos"])
+
+_ALLOWED_IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
+_MAX_IMAGE_BYTES = 5 * 1024 * 1024
+_UPLOAD_DIR = Path(__file__).resolve().parents[2] / "uploads" / "products"
+
+
+@router.post(
+    "/products/upload-image",
+    response_model=ProductImageUploadResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Subir imagen de producto",
+    description="Recibe una imagen en base64, la guarda localmente en el servidor y devuelve su ruta pública.",
+    responses={400: {"model": ErrorResponse, "description": "Formato o tamaño de imagen inválido."}},
+)
+def upload_product_image(payload: ProductImageUploadRequest):
+    ext = Path(payload.filename).suffix.lower()
+    if ext not in _ALLOWED_IMAGE_EXTS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Formato de imagen no soportado ({ext or 'sin extensión'}). Usa PNG, JPG, WEBP o GIF.",
+        )
+
+    raw_b64 = payload.content_base64.split(",", 1)[-1]
+    try:
+        data = base64.b64decode(raw_b64, validate=True)
+    except (binascii.Error, ValueError) as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="El contenido base64 de la imagen no es válido.",
+        ) from exc
+
+    if len(data) == 0 or len(data) > _MAX_IMAGE_BYTES:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="La imagen debe pesar entre 1 byte y 5 MB.",
+        )
+
+    _UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    saved_name = f"{uuid4().hex}{ext}"
+    (_UPLOAD_DIR / saved_name).write_bytes(data)
+    return ProductImageUploadResponse(image_url=f"/uploads/products/{saved_name}")
 
 
 @router.get(

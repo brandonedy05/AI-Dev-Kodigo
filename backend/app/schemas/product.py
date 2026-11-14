@@ -31,6 +31,7 @@ class ProductCreate(BaseModel):
     barcode: Optional[str] = Field(default=None, max_length=64, description="Código de barras EAN/UPC opcional.", examples=["7411000123456"])
     name: str = Field(..., min_length=2, max_length=150, description="Nombre comercial del producto.", examples=["Coca-Cola 600ml"])
     description: Optional[str] = Field(default=None, max_length=500, description="Detalles adicionales del producto.")
+    image_url: Optional[str] = Field(default=None, max_length=500, description="URL de imagen de referencia del producto.", examples=["https://ejemplo.com/coca.png"])
     price: Decimal = Field(..., ge=0, decimal_places=2, description="Precio unitario de venta en USD.", examples=["1.25"])
     stock: int = Field(default=0, ge=0, description="Cantidad inicial disponible en tienda.", examples=[42])
     min_stock: int = Field(default=5, ge=0, description="Umbral mínimo para alertas de stock bajo.", examples=[10])
@@ -44,6 +45,7 @@ class ProductUpdate(BaseModel):
     barcode: Optional[str] = Field(default=None, max_length=64)
     name: Optional[str] = Field(default=None, min_length=2, max_length=150)
     description: Optional[str] = Field(default=None, max_length=500)
+    image_url: Optional[str] = Field(default=None, max_length=500)
     price: Optional[Decimal] = Field(default=None, ge=0, decimal_places=2)
     stock: Optional[int] = Field(default=None, ge=0)
     min_stock: Optional[int] = Field(default=None, ge=0)
@@ -61,6 +63,7 @@ class ProductRead(BaseModel):
     barcode: Optional[str]
     name: str
     description: Optional[str]
+    image_url: Optional[str]
     price: Decimal
     stock: int
     min_stock: int
@@ -68,4 +71,17 @@ class ProductRead(BaseModel):
     category_id: Optional[int]
     created_at: datetime
     updated_at: datetime
+
+
+class ProductImageUploadRequest(BaseModel):
+    """Carga de imagen de referencia en base64 para un producto."""
+
+    filename: str = Field(..., min_length=3, max_length=255, examples=["coca.png"])
+    content_base64: str = Field(..., min_length=4, description="Contenido binario de la imagen codificado en base64.")
+
+
+class ProductImageUploadResponse(BaseModel):
+    """URL pública relativa de la imagen almacenada en el servidor."""
+
+    image_url: str
 

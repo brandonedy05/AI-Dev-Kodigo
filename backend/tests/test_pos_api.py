@@ -31,7 +31,21 @@ def client_fixture(monkeypatch):
 
 
 def test_full_pos_flow(client: TestClient):
-    # 1. Crear categoría y producto
+    # 1. Subir imagen de producto, crear categoría y producto
+    import base64
+
+    tiny_png = base64.b64encode(
+        b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x02\x00\x00\x00\x90wS\xde"
+    ).decode("ascii")
+    up_res = client.post(
+        "/api/v1/products/upload-image",
+        json={"filename": "coca.png", "content_base64": tiny_png},
+    )
+    assert up_res.status_code == 201
+    uploaded_url = up_res.json()["image_url"]
+    assert uploaded_url.startswith("/uploads/products/")
+    assert client.get(uploaded_url).status_code == 200
+
     cat_res = client.post("/api/v1/categories", json={"name": "Bebidas"})
     assert cat_res.status_code == 201
     cat_id = cat_res.json()["id"]
@@ -41,6 +55,7 @@ def test_full_pos_flow(client: TestClient):
         json={
             "sku": "BEB-001",
             "name": "Coca-Cola 600ml",
+            "image_url": uploaded_url,
             "price": "1.25",
             "stock": 10,
             "min_stock": 3,
@@ -48,19 +63,30 @@ def test_full_pos_flow(client: TestClient):
         },
     )
     assert prod_res.status_code == 201
+    assert prod_res.json()["image_url"] == uploaded_url
     prod_id = prod_res.json()["id"]
 
-    # 2. Registrar cliente
+    # 2. Registrar cliente (con campos de El Salvador)
     cust_res = client.post(
         "/api/v1/customers",
         json={
             "full_name": "María Hernández",
+            "customer_category": "TAXPAYER",
             "document_type": "DUI",
             "document_number": "04512984-1",
-            "phone": "7890-1234",
+            "nrc": "284910-3",
+            "business_name": "Comercial Hernández S.A. de C.V.",
+            "department": "San Salvador",
+            "municipality": "San Salvador Centro",
+            "district": "San Salvador",
+            "address": "Col. Escalón, Calle El Mirador #14",
+            "phone": "+503 7890-1234",
+            "credit_limit": "500.00",
+            "credit_days": 30,
         },
     )
     assert cust_res.status_code == 201
+    assert cust_res.json()["nrc"] == "284910-3"
     cust_id = cust_res.json()["id"]
 
     # 3. Intentar vender con caja cerrada debe fallar con 409

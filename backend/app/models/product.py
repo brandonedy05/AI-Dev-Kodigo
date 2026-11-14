@@ -45,6 +45,7 @@ class Product(SQLModel, table=True):
     barcode: Optional[str] = Field(default=None, max_length=64, index=True)
     name: str = Field(max_length=150, index=True)
     description: Optional[str] = Field(default=None, max_length=500)
+    image_url: Optional[str] = Field(default=None, max_length=500)
     price: Decimal = Field(
         sa_column=Column(Numeric(12, 2), nullable=False),
     )

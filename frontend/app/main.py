@@ -15,71 +15,125 @@ from app.views.secondary_views import CustomersView, ProductsView, ReportsView
 
 def main(page: ft.Page) -> None:
     page.title = "Mi Tiendita Fácil - POS"
-    page.bgcolor = Colors.SURFACE
-    page.theme = ft.Theme(font_family=FONT_FAMILY, color_scheme_seed=Colors.PRIMARY)
+    page.bgcolor = Colors.CANVAS
+    page.theme_mode = ft.ThemeMode.LIGHT
+    page.theme = ft.Theme(font_family=FONT_FAMILY, color_scheme_seed=Colors.EMERALD)
     page.padding = 0
 
     api = POSApiClient()
 
-    def notify(message: str, color: str = Colors.PRIMARY) -> None:
+    def notify(message: str, color: str = Colors.EMERALD_DARK) -> None:
         page.show_dialog(ft.SnackBar(content=ft.Text(message, color=Colors.ON_PRIMARY), bgcolor=color))
 
     cash_badge = ft.Container(
-        padding=ft.Padding.symmetric(horizontal=12, vertical=6),
+        padding=ft.Padding.symmetric(horizontal=14, vertical=6),
         border_radius=99,
-        bgcolor=Colors.ERROR_CONTAINER,
-        content=ft.Text("Caja cerrada", size=12, weight=ft.FontWeight.BOLD, color=Colors.ERROR),
+        bgcolor=Colors.CRIMSON_BG,
+        content=ft.Text("Caja cerrada", size=12, weight=ft.FontWeight.BOLD, color=Colors.CRIMSON_TEXT),
     )
 
     def refresh_cash_badge() -> None:
         try:
             summary = api.get_current_cash_session()
             cashier = summary["session"]["cashier_name"]
-            cash_badge.bgcolor = Colors.PRIMARY_CONTAINER
-            cash_badge.content = ft.Text(f"Caja abierta: {cashier}", size=12, weight=ft.FontWeight.BOLD, color=Colors.ON_PRIMARY)
+            cash_badge.bgcolor = Colors.EMERALD
+            cash_badge.content = ft.Text(
+                f"Caja abierta · {cashier}",
+                size=12,
+                weight=ft.FontWeight.BOLD,
+                color=Colors.ON_PRIMARY,
+            )
         except POSApiError:
-            cash_badge.bgcolor = Colors.ERROR_CONTAINER
-            cash_badge.content = ft.Text("Caja cerrada", size=12, weight=ft.FontWeight.BOLD, color=Colors.ERROR)
+            cash_badge.bgcolor = Colors.CRIMSON_BG
+            cash_badge.content = ft.Text("Caja cerrada", size=12, weight=ft.FontWeight.BOLD, color=Colors.CRIMSON_TEXT)
         page.update()
 
     pos_view = POSTerminalView(api=api, on_notify=notify)
     cash_view = CashRegisterView(api=api, on_notify=notify, on_session_changed=refresh_cash_badge)
-    products_view = ProductsView(api=api)
-    customers_view = CustomersView(api=api)
+    products_view = ProductsView(api=api, on_notify=notify)
+    customers_view = CustomersView(api=api, on_notify=notify)
     reports_view = ReportsView(api=api)
 
     views = [pos_view, cash_view, products_view, customers_view, reports_view]
-    body_host = ft.Container(expand=True, padding=16, content=pos_view)
+    body_host = ft.Container(expand=True, content=pos_view)
 
-    def on_nav_change(e: ft.ControlEvent) -> None:
-        idx = e.control.selected_index
+    nav_items = [
+        ("Vender", ft.Icons.POINT_OF_SALE),
+        ("Caja", ft.Icons.ACCOUNT_BALANCE_WALLET),
+        ("Productos", ft.Icons.INVENTORY_2),
+        ("Clientes", ft.Icons.PEOPLE),
+        ("Reportes", ft.Icons.BAR_CHART),
+    ]
+    selected_idx = 0
+    sidebar_col = ft.Column(spacing=8, horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+
+    def render_sidebar() -> None:
+        sidebar_col.controls.clear()
+        for idx, (label, icon) in enumerate(nav_items):
+            active = idx == selected_idx
+            sidebar_col.controls.append(
+                ft.Container(
+                    width=80,
+                    padding=ft.Padding.symmetric(vertical=12, horizontal=6),
+                    border_radius=12,
+                    bgcolor=Colors.EMERALD if active else "#1E293B",
+                    border=ft.Border.all(1, Colors.EMERALD if active else "#334155"),
+                    on_click=lambda _, i=idx: select_tab(i),
+                    content=ft.Column(
+                        spacing=4,
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                        controls=[
+                            ft.Icon(icon, size=22, color=Colors.ON_PRIMARY if active else "#E2E8F0"),
+                            ft.Text(
+                                label,
+                                size=11,
+                                weight=ft.FontWeight.BOLD if active else ft.FontWeight.W_600,
+                                color=Colors.ON_PRIMARY if active else "#E2E8F0",
+                            ),
+                        ],
+                    ),
+                )
+            )
+
+    def select_tab(idx: int) -> None:
+        nonlocal selected_idx
+        selected_idx = idx
+        render_sidebar()
         body_host.content = views[idx]
-        views[idx].refresh()
         page.update()
+        views[idx].refresh()
 
-    rail = ft.NavigationRail(
-        selected_index=0,
-        label_type=ft.NavigationRailLabelType.ALL,
-        bgcolor=Colors.SURFACE_CONTAINER_LOWEST,
-        destinations=[
-            ft.NavigationRailDestination(icon=ft.Icons.POINT_OF_SALE, label="Vender"),
-            ft.NavigationRailDestination(icon=ft.Icons.ACCOUNT_BALANCE_WALLET, label="Caja"),
-            ft.NavigationRailDestination(icon=ft.Icons.INVENTORY_2, label="Productos"),
-            ft.NavigationRailDestination(icon=ft.Icons.PEOPLE, label="Clientes"),
-            ft.NavigationRailDestination(icon=ft.Icons.BAR_CHART, label="Reportes"),
-        ],
-        on_change=on_nav_change,
+    render_sidebar()
+    sidebar = ft.Container(
+        width=98,
+        padding=ft.Padding.symmetric(vertical=14, horizontal=8),
+        bgcolor=Colors.NAVY,
+        border=ft.Border.only(top=ft.BorderSide(1, "#1E293B")),
+        content=sidebar_col,
     )
 
     header = ft.Container(
-        height=56,
+        height=60,
         padding=ft.Padding.symmetric(horizontal=20),
-        bgcolor=Colors.SURFACE_CONTAINER_LOWEST,
-        border=ft.Border.only(bottom=ft.BorderSide(1, Colors.OUTLINE_VARIANT)),
+        bgcolor=Colors.NAVY,
         content=ft.Row(
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
             controls=[
-                ft.Text("Mi Tiendita Fácil", size=18, weight=ft.FontWeight.BOLD, color=Colors.ON_SURFACE),
+                ft.Row(
+                    spacing=10,
+                    controls=[
+                        ft.Container(
+                            width=34,
+                            height=34,
+                            border_radius=10,
+                            bgcolor=Colors.EMERALD,
+                            alignment=ft.Alignment.CENTER,
+                            content=ft.Icon(ft.Icons.STOREFRONT, color=Colors.ON_PRIMARY, size=20),
+                        ),
+                        ft.Text("Mi Tiendita Fácil", size=18, weight=ft.FontWeight.BOLD, color=Colors.ON_PRIMARY),
+                        ft.Text("POS", size=12, weight=ft.FontWeight.BOLD, color=Colors.EMERALD),
+                    ],
+                ),
                 cash_badge,
             ],
         ),
@@ -91,7 +145,11 @@ def main(page: ft.Page) -> None:
             spacing=0,
             controls=[
                 header,
-                ft.Row(expand=True, spacing=0, controls=[rail, ft.VerticalDivider(width=1), body_host]),
+                ft.Row(
+                    expand=True,
+                    spacing=0,
+                    controls=[sidebar, body_host],
+                ),
             ],
         )
     )
@@ -102,4 +160,3 @@ def main(page: ft.Page) -> None:
 
 if __name__ == "__main__":
     ft.run(main)
-

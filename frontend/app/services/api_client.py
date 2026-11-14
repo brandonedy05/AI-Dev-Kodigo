@@ -1,5 +1,7 @@
+import base64
 from decimal import Decimal
 from typing import Any, Optional
+from urllib.parse import urlparse
 
 import httpx
 
@@ -18,7 +20,16 @@ class POSApiClient:
 
     def __init__(self, base_url: str = "http://127.0.0.1:8000/api/v1"):
         self.base_url = base_url.rstrip("/")
+        parsed = urlparse(self.base_url)
+        self.origin = f"{parsed.scheme}://{parsed.netloc}" if parsed.scheme and parsed.netloc else ""
         self._client = httpx.Client(base_url=self.base_url, timeout=10.0)
+
+    def resolve_media_url(self, path_or_url: Optional[str]) -> Optional[str]:
+        if not path_or_url:
+            return None
+        if path_or_url.startswith("/"):
+            return f"{self.origin}{path_or_url}"
+        return path_or_url
 
     def _request(self, method: str, path: str, **kwargs: Any) -> Any:
         response = self._client.request(method, path, **kwargs)
@@ -46,10 +57,49 @@ class POSApiClient:
             params["category_id"] = category_id
         return self._request("GET", "/products", params=params)
 
+    def create_product(
+        self,
+        sku: str,
+        name: str,
+        price: Decimal,
+        stock: int,
+        min_stock: int = 5,
+        category_id: Optional[int] = None,
+        image_url: Optional[str] = None,
+    ) -> dict[str, Any]:
+        payload: dict[str, Any] = {
+            "sku": sku,
+            "name": name,
+            "price": str(price),
+            "stock": stock,
+            "min_stock": min_stock,
+            "category_id": category_id,
+            "image_url": image_url or None,
+        }
+        return self._request("POST", "/products", json=payload)
+
+    def upload_product_image(self, filename: str, raw_bytes: bytes) -> str:
+        encoded = base64.b64encode(raw_bytes).decode("ascii")
+        res = self._request(
+            "POST",
+            "/products/upload-image",
+            json={"filename": filename, "content_base64": encoded},
+        )
+        return str(res["image_url"])
+
     # --- Clientes ---
     def get_customers(self, search: Optional[str] = None) -> list[dict[str, Any]]:
         params = {"search": search} if search else {}
         return self._request("GET", "/customers", params=params)
+
+    def create_customer(self, payload: dict[str, Any]) -> dict[str, Any]:
+        return self._request("POST", "/customers", json=payload)
+
+    def update_customer(self, customer_id: int, payload: dict[str, Any]) -> dict[str, Any]:
+        return self._request("PATCH", f"/customers/{customer_id}", json=payload)
+
+    def delete_customer(self, customer_id: int) -> dict[str, Any]:
+        return self._request("DELETE", f"/customers/{customer_id}")
 
     # --- Caja ---
     def get_current_cash_session(self) -> dict[str, Any]:

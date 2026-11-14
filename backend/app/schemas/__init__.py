@@ -12,6 +12,8 @@ from app.schemas.product import (
     CategoryCreate,
     CategoryRead,
     ProductCreate,
+    ProductImageUploadRequest,
+    ProductImageUploadResponse,
     ProductRead,
     ProductUpdate,
 )

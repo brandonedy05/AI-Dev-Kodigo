@@ -23,6 +23,8 @@ def list_customers(
             or_(
                 col(Customer.full_name).ilike(pattern),
                 col(Customer.document_number).ilike(pattern),
+                col(Customer.nrc).ilike(pattern),
+                col(Customer.business_name).ilike(pattern),
                 col(Customer.phone).ilike(pattern),
             )
         )
