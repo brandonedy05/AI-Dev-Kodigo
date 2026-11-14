@@ -12,6 +12,7 @@ from app.schemas.common import ErrorResponse
 from app.schemas.product import (
     CategoryCreate,
     CategoryRead,
+    CategoryUpdate,
     ProductCreate,
     ProductImageUploadRequest,
     ProductImageUploadResponse,
@@ -90,6 +91,38 @@ def create_category(
     session: Session = Depends(get_session),
 ):
     return product_service.create_category(session, payload)
+
+
+@router.patch(
+    "/categories/{category_id}",
+    response_model=CategoryRead,
+    summary="Actualizar categoría",
+    description="Actualiza el nombre o descripción de una categoría existente.",
+    responses={
+        404: {"model": ErrorResponse, "description": "Categoría no encontrada."},
+        409: {"model": ErrorResponse, "description": "Nombre de categoría duplicado."},
+    },
+)
+def update_category(
+    category_id: int,
+    payload: CategoryUpdate,
+    session: Session = Depends(get_session),
+):
+    return product_service.update_category(session, category_id, payload)
+
+
+@router.delete(
+    "/categories/{category_id}",
+    response_model=CategoryRead,
+    summary="Desactivar categoría",
+    description="Desactiva una categoría (soft delete) sin borrar los productos vinculados.",
+    responses={404: {"model": ErrorResponse, "description": "Categoría no encontrada."}},
+)
+def delete_category(
+    category_id: int,
+    session: Session = Depends(get_session),
+):
+    return product_service.deactivate_category(session, category_id)
 
 
 @router.get(

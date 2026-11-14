@@ -62,6 +62,14 @@ class POSTerminalView(ft.Row):
             text_size=13,
         )
         self.customers_map: dict[str, str] = {"0": "Consumidor Final"}
+        self.price_mode_selector = ft.SegmentedButton(
+            selected=["RETAIL"],
+            segments=[
+                ft.Segment(value="RETAIL", label=ft.Text("Detalle"), icon=ft.Icon(ft.Icons.SELL_OUTLINED)),
+                ft.Segment(value="WHOLESALE", label=ft.Text("Mayoreo"), icon=ft.Icon(ft.Icons.INVENTORY_OUTLINED)),
+            ],
+            on_change=lambda _: self._render_cart(),
+        )
         self.payment_selector = ft.SegmentedButton(
             selected=["CASH"],
             segments=[
@@ -89,6 +97,54 @@ class POSTerminalView(ft.Row):
                 self._quick_cash_pill("$50", Decimal("50.00")),
                 self._quick_cash_pill("Exacto", None),
             ],
+        )
+        self.card_bank_field = ft.TextField(
+            label="Banco emisor *",
+            hint_text="Ej: Banco Agrícola, BAC, Davivienda",
+            bgcolor=Colors.SURFACE,
+            border_color=Colors.BORDER,
+            border_radius=10,
+            text_size=13,
+        )
+        self.card_type_dropdown = ft.Dropdown(
+            label="Tipo de tarjeta *",
+            value="CREDITO",
+            options=[
+                ft.dropdown.Option("CREDITO", "Crédito"),
+                ft.dropdown.Option("DEBITO", "Débito"),
+            ],
+            border_color=Colors.BORDER,
+            border_radius=10,
+            text_size=13,
+        )
+        self.card_auth_field = ft.TextField(
+            label="N° de autorización (Voucher) *",
+            hint_text="Ej: 482910",
+            bgcolor=Colors.SURFACE,
+            border_color=Colors.BORDER,
+            border_radius=10,
+            text_size=13,
+        )
+        self.card_details_container = ft.Container(
+            visible=False,
+            padding=10,
+            bgcolor=Colors.CANVAS,
+            border=ft.Border.all(1, Colors.BORDER),
+            border_radius=10,
+            content=ft.Column(
+                spacing=8,
+                controls=[
+                    ft.Text("Datos del Voucher de Tarjeta", size=12, weight=ft.FontWeight.BOLD, color=Colors.NAVY),
+                    self.card_bank_field,
+                    ft.Row(
+                        spacing=8,
+                        controls=[
+                            ft.Container(expand=True, content=self.card_type_dropdown),
+                            ft.Container(expand=True, content=self.card_auth_field),
+                        ],
+                    ),
+                ],
+            ),
         )
         self.subtotal_text = ft.Text("$0.00", size=14, color=Colors.TEXT_SECONDARY)
         self.total_text = ft.Text("$0.00", size=30, weight=ft.FontWeight.BOLD, color=Colors.TEXT_PRIMARY)
@@ -167,11 +223,13 @@ class POSTerminalView(ft.Row):
                 spacing=10,
                 controls=[
                     self.customer_dropdown,
+                    self.price_mode_selector,
                     self.cart_list,
                     ft.Divider(height=1, color=Colors.BORDER),
                     self.payment_selector,
                     self.quick_cash_row,
                     self.amount_paid_field,
+                    self.card_details_container,
                     ft.Row(
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                         controls=[ft.Text("Subtotal", color=Colors.TEXT_SECONDARY), self.subtotal_text],
@@ -225,7 +283,7 @@ class POSTerminalView(ft.Row):
 
     def _apply_quick_cash(self, value: Optional[Decimal]) -> None:
         if value is None:
-            total = sum((i["price"] * i["quantity"] for i in self.cart.values()), Decimal("0.00"))
+            total = sum((self._effective_price(i) * i["quantity"] for i in self.cart.values()), Decimal("0.00"))
             self.amount_paid_field.value = f"{total:.2f}"
         else:
             self.amount_paid_field.value = f"{value:.2f}"
@@ -378,11 +436,22 @@ class POSTerminalView(ft.Row):
                             ft.Column(
                                 spacing=3,
                                 controls=[
-                                    ft.Text(
-                                        f"${Decimal(str(prod['price'])):.2f}",
-                                        size=20,
-                                        weight=ft.FontWeight.BOLD,
-                                        color=Colors.TEXT_PRIMARY,
+                                    ft.Row(
+                                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                                        controls=[
+                                            ft.Text(
+                                                f"${Decimal(str(prod['price'])):.2f}",
+                                                size=20,
+                                                weight=ft.FontWeight.BOLD,
+                                                color=Colors.TEXT_PRIMARY,
+                                            ),
+                                            ft.Text(
+                                                f"May: ${Decimal(str(prod['wholesale_price'])):.2f}" if prod.get("wholesale_price") is not None else "",
+                                                size=11,
+                                                weight=ft.FontWeight.W_600,
+                                                color=Colors.AMBER_TEXT,
+                                            ),
+                                        ],
                                     ),
                                     ft.Text(
                                         prod["name"],
@@ -421,10 +490,12 @@ class POSTerminalView(ft.Row):
         if pid in self.cart:
             self.cart[pid]["quantity"] += 1
         else:
+            wp = product.get("wholesale_price")
             self.cart[pid] = {
                 "product_id": pid,
                 "name": product["name"],
                 "price": Decimal(str(product["price"])),
+                "wholesale_price": Decimal(str(wp)) if wp is not None else None,
                 "stock": stock,
                 "quantity": 1,
             }
@@ -444,19 +515,34 @@ class POSTerminalView(ft.Row):
             item["quantity"] = new_qty
         self._render_cart()
 
+    def _is_wholesale(self) -> bool:
+        return next(iter(self.price_mode_selector.selected), "RETAIL") == "WHOLESALE"
+
+    def _effective_price(self, item: dict[str, Any]) -> Decimal:
+        if self._is_wholesale() and item.get("wholesale_price") is not None:
+            return item["wholesale_price"]
+        return item["price"]
+
     def _clear_cart(self) -> None:
         self.cart.clear()
         self.amount_paid_field.value = "0.00"
         self.customer_dropdown.value = "0"
+        self.price_mode_selector.selected = ["RETAIL"]
+        self.card_bank_field.value = ""
+        self.card_auth_field.value = ""
+        self.card_type_dropdown.value = "CREDITO"
         self._render_cart()
 
     def _render_cart(self) -> None:
         self.cart_list.controls.clear()
         total_units = sum(item["quantity"] for item in self.cart.values())
         self.items_count_text.value = f"{total_units} {'artículo' if total_units == 1 else 'artículos'}"
+        wholesale_active = self._is_wholesale()
 
         for idx, (pid, item) in enumerate(self.cart.items()):
-            line_total = item["price"] * item["quantity"]
+            unit_price = self._effective_price(item)
+            using_wp = wholesale_active and item.get("wholesale_price") is not None
+            line_total = unit_price * item["quantity"]
             row_bg = Colors.SURFACE if idx % 2 == 0 else Colors.CANVAS
             self.cart_list.controls.append(
                 ft.Container(
@@ -472,7 +558,11 @@ class POSTerminalView(ft.Row):
                                 spacing=1,
                                 controls=[
                                     ft.Text(item["name"], weight=ft.FontWeight.W_600, size=13, color=Colors.TEXT_PRIMARY),
-                                    ft.Text(f"${item['price']:.2f} c/u", size=11, color=Colors.TEXT_MUTED),
+                                    ft.Text(
+                                        f"${unit_price:.2f} c/u" + (" (Mayoreo)" if using_wp else ""),
+                                        size=11,
+                                        color=Colors.AMBER_TEXT if using_wp else Colors.TEXT_MUTED,
+                                    ),
                                 ],
                             ),
                             ft.Row(
@@ -497,18 +587,23 @@ class POSTerminalView(ft.Row):
         self._recalculate_totals()
 
     def _recalculate_totals(self) -> None:
-        subtotal = sum((i["price"] * i["quantity"] for i in self.cart.values()), Decimal("0.00"))
+        subtotal = sum((self._effective_price(i) * i["quantity"] for i in self.cart.values()), Decimal("0.00"))
         self.subtotal_text.value = f"${subtotal:.2f}"
         self.total_text.value = f"${subtotal:.2f}"
         self.checkout_btn.content = f"COBRAR  ${subtotal:.2f}"
 
         method = next(iter(self.payment_selector.selected), "CASH")
+        is_card = method == "CARD"
+        self.card_details_container.visible = is_card
+        self.quick_cash_row.visible = not is_card
+        self.amount_paid_field.visible = not is_card
+
         try:
             paid = Decimal(self.amount_paid_field.value or "0.00")
         except Exception:
             paid = Decimal("0.00")
 
-        if method == "CARD":
+        if is_card:
             paid = subtotal
             self.amount_paid_field.value = f"{subtotal:.2f}"
 
@@ -528,17 +623,38 @@ class POSTerminalView(ft.Row):
             self.on_notify("Ingresa un monto recibido válido.", Colors.CRIMSON)
             return
 
+        card_bank = None
+        card_type = None
+        card_auth = None
+        if method == "CARD":
+            card_bank = (self.card_bank_field.value or "").strip()
+            card_type = (self.card_type_dropdown.value or "").strip()
+            card_auth = (self.card_auth_field.value or "").strip()
+            if not card_bank or not card_type or not card_auth:
+                self.on_notify(
+                    "Para pagos con tarjeta ingresa Banco, Tipo (Crédito/Débito) y N° de autorización.",
+                    Colors.CRIMSON,
+                )
+                return
+
         selected_cid = self.customer_dropdown.value or "0"
         customer_id = int(selected_cid) if selected_cid != "0" else None
         customer_name = self.customers_map.get(selected_cid, "Consumidor Final")
 
-        items = [{"product_id": pid, "quantity": item["quantity"]} for pid, item in self.cart.items()]
+        use_wholesale = self._is_wholesale()
+        items = [
+            {"product_id": pid, "quantity": item["quantity"], "use_wholesale": use_wholesale}
+            for pid, item in self.cart.items()
+        ]
         try:
             sale = self.api.create_sale(
                 items=items,
                 payment_method=method,
                 amount_paid=amount_paid,
                 customer_id=customer_id,
+                card_bank=card_bank,
+                card_type=card_type,
+                card_auth_number=card_auth,
             )
             self._clear_cart()
             self.load_products()
@@ -576,6 +692,18 @@ class POSTerminalView(ft.Row):
                     ft.Text(f"Ticket: {sale['ticket_number']}", size=12, color=Colors.TEXT_MUTED),
                     ft.Text(f"Cliente: {customer_name}", size=12, color=Colors.TEXT_PRIMARY, weight=ft.FontWeight.W_600),
                     ft.Text(f"Método de pago: {sale['payment_method']}", size=12, color=Colors.TEXT_MUTED),
+                    *(
+                        [
+                            ft.Text(
+                                f"Tarjeta {sale.get('card_type') or ''} · {sale.get('card_bank') or ''} (Auth: {sale.get('card_auth_number') or ''})",
+                                size=11,
+                                color=Colors.NAVY,
+                                weight=ft.FontWeight.W_600,
+                            )
+                        ]
+                        if sale.get("payment_method") == "CARD"
+                        else []
+                    ),
                     ft.Divider(height=1, color=Colors.BORDER),
                     *item_rows,
                     ft.Divider(height=1, color=Colors.BORDER),

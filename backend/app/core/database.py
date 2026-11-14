@@ -33,9 +33,20 @@ def init_db() -> None:
 
     if "products" in tables:
         columns = {col["name"] for col in inspector.get_columns("products")}
-        if "image_url" not in columns:
-            with engine.begin() as conn:
-                conn.execute(text("ALTER TABLE products ADD COLUMN image_url VARCHAR(500)"))
+        product_migrations = {
+            "image_url": "VARCHAR(500)",
+            "unit_of_measure": "VARCHAR(30) NOT NULL DEFAULT 'Unidad'",
+            "cost_price": "NUMERIC(12, 2) NOT NULL DEFAULT 0.00",
+            "wholesale_price": "NUMERIC(12, 2)",
+            "applies_iva": "BOOLEAN NOT NULL DEFAULT TRUE",
+            "location": "VARCHAR(80)",
+            "supplier_name": "VARCHAR(120)",
+            "supplier_code": "VARCHAR(60)",
+        }
+        with engine.begin() as conn:
+            for col_name, col_def in product_migrations.items():
+                if col_name not in columns:
+                    conn.execute(text(f"ALTER TABLE products ADD COLUMN {col_name} {col_def}"))
 
     if "customers" in tables:
         existing_cols = {col["name"] for col in inspector.get_columns("customers")}
@@ -57,6 +68,18 @@ def init_db() -> None:
             for col_name, col_def in customer_migrations.items():
                 if col_name not in existing_cols:
                     conn.execute(text(f"ALTER TABLE customers ADD COLUMN {col_name} {col_def}"))
+
+    if "sales" in tables:
+        sale_cols = {col["name"] for col in inspector.get_columns("sales")}
+        sale_migrations = {
+            "card_bank": "VARCHAR(80)",
+            "card_type": "VARCHAR(20)",
+            "card_auth_number": "VARCHAR(60)",
+        }
+        with engine.begin() as conn:
+            for col_name, col_def in sale_migrations.items():
+                if col_name not in sale_cols:
+                    conn.execute(text(f"ALTER TABLE sales ADD COLUMN {col_name} {col_def}"))
 
 
 def get_session() -> Generator[Session, None, None]:

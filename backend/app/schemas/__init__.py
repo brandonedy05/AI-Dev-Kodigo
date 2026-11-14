@@ -11,6 +11,7 @@ from app.schemas.customer import CustomerCreate, CustomerRead, CustomerUpdate
 from app.schemas.product import (
     CategoryCreate,
     CategoryRead,
+    CategoryUpdate,
     ProductCreate,
     ProductImageUploadRequest,
     ProductImageUploadResponse,

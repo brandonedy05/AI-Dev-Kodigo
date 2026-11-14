@@ -45,6 +45,15 @@ class POSApiClient:
     def get_categories(self) -> list[dict[str, Any]]:
         return self._request("GET", "/categories")
 
+    def create_category(self, name: str, description: Optional[str] = None) -> dict[str, Any]:
+        return self._request("POST", "/categories", json={"name": name, "description": description or None})
+
+    def update_category(self, category_id: int, payload: dict[str, Any]) -> dict[str, Any]:
+        return self._request("PATCH", f"/categories/{category_id}", json=payload)
+
+    def delete_category(self, category_id: int) -> dict[str, Any]:
+        return self._request("DELETE", f"/categories/{category_id}")
+
     def get_products(
         self,
         search: Optional[str] = None,
@@ -57,26 +66,14 @@ class POSApiClient:
             params["category_id"] = category_id
         return self._request("GET", "/products", params=params)
 
-    def create_product(
-        self,
-        sku: str,
-        name: str,
-        price: Decimal,
-        stock: int,
-        min_stock: int = 5,
-        category_id: Optional[int] = None,
-        image_url: Optional[str] = None,
-    ) -> dict[str, Any]:
-        payload: dict[str, Any] = {
-            "sku": sku,
-            "name": name,
-            "price": str(price),
-            "stock": stock,
-            "min_stock": min_stock,
-            "category_id": category_id,
-            "image_url": image_url or None,
-        }
+    def create_product(self, payload: dict[str, Any]) -> dict[str, Any]:
         return self._request("POST", "/products", json=payload)
+
+    def update_product(self, product_id: int, payload: dict[str, Any]) -> dict[str, Any]:
+        return self._request("PATCH", f"/products/{product_id}", json=payload)
+
+    def delete_product(self, product_id: int) -> dict[str, Any]:
+        return self._request("DELETE", f"/products/{product_id}")
 
     def upload_product_image(self, filename: str, raw_bytes: bytes) -> str:
         encoded = base64.b64encode(raw_bytes).decode("ascii")
@@ -127,6 +124,9 @@ class POSApiClient:
         amount_paid: Decimal,
         customer_id: Optional[int] = None,
         discount: Decimal = Decimal("0.00"),
+        card_bank: Optional[str] = None,
+        card_type: Optional[str] = None,
+        card_auth_number: Optional[str] = None,
     ) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "items": items,
@@ -134,10 +134,16 @@ class POSApiClient:
             "amount_paid": str(amount_paid),
             "discount": str(discount),
             "customer_id": customer_id,
+            "card_bank": card_bank,
+            "card_type": card_type,
+            "card_auth_number": card_auth_number,
         }
         return self._request("POST", "/sales", json=payload)
 
     # --- Reportes ---
+    def get_sales(self, limit: int = 50) -> list[dict[str, Any]]:
+        return self._request("GET", "/sales", params={"limit": limit})
+
     def get_sales_summary(self) -> dict[str, Any]:
         return self._request("GET", "/reports/sales-summary")
 

@@ -57,6 +57,7 @@ def test_full_pos_flow(client: TestClient):
             "name": "Coca-Cola 600ml",
             "image_url": uploaded_url,
             "price": "1.25",
+            "wholesale_price": "1.00",
             "stock": 10,
             "min_stock": 3,
             "category_id": cat_id,
@@ -138,6 +139,25 @@ def test_full_pos_flow(client: TestClient):
     prod_after = client.get(f"/api/v1/products/{prod_id}").json()
     assert prod_after["stock"] == 8
 
+    # 6b. Registrar venta por mayoreo con tarjeta (1 unidad * 1.00 = 1.00)
+    wholesale_res = client.post(
+        "/api/v1/sales",
+        json={
+            "customer_id": cust_id,
+            "payment_method": "CARD",
+            "card_bank": "Banco Agrícola",
+            "card_type": "CREDITO",
+            "card_auth_number": "482910",
+            "amount_paid": "1.00",
+            "items": [{"product_id": prod_id, "quantity": 1, "use_wholesale": True}],
+        },
+    )
+    assert wholesale_res.status_code == 201
+    assert Decimal(wholesale_res.json()["total"]) == Decimal("1.00")
+    assert wholesale_res.json()["card_bank"] == "Banco Agrícola"
+    assert wholesale_res.json()["card_type"] == "CREDITO"
+    assert wholesale_res.json()["card_auth_number"] == "482910"
+
     # 7. Movimiento manual y cierre de caja
     mov_res = client.post(
         "/api/v1/cash-register/movements",
@@ -156,12 +176,35 @@ def test_full_pos_flow(client: TestClient):
     assert close_res.status_code == 200
     assert Decimal(close_res.json()["difference"]) == Decimal("0.00")
 
-    # 8. Reportes
+    # 8. Reportes (1 venta detalle 2.50 + 1 venta mayoreo 1.00 = 3.50)
     rep_summary = client.get("/api/v1/reports/sales-summary").json()
-    assert rep_summary["total_transactions"] == 1
-    assert Decimal(rep_summary["total_revenue"]) == Decimal("2.50")
+    assert rep_summary["total_transactions"] == 2
+    assert Decimal(rep_summary["total_revenue"]) == Decimal("3.50")
 
     top_prods = client.get("/api/v1/reports/top-products").json()
     assert len(top_prods) == 1
-    assert top_prods[0]["units_sold"] == 2
+    assert top_prods[0]["units_sold"] == 3
+
+    # 9. Editar y desactivar producto (soft delete)
+    patch_res = client.patch(
+        f"/api/v1/products/{prod_id}",
+        json={"cost_price": "0.85", "location": "Pasillo 1", "supplier_name": "Distribuidora Sur"},
+    )
+    assert patch_res.status_code == 200
+    assert patch_res.json()["location"] == "Pasillo 1"
+
+    del_res = client.delete(f"/api/v1/products/{prod_id}")
+    assert del_res.status_code == 200
+    assert del_res.json()["is_active"] is False
+    assert client.get("/api/v1/products").json() == []
+
+    # 10. Editar y desactivar categoría (soft delete)
+    cat_patch = client.patch(f"/api/v1/categories/{cat_id}", json={"name": "Bebidas Frías"})
+    assert cat_patch.status_code == 200
+    assert cat_patch.json()["name"] == "Bebidas Frías"
+
+    cat_del = client.delete(f"/api/v1/categories/{cat_id}")
+    assert cat_del.status_code == 200
+    assert cat_del.json()["is_active"] is False
+    assert client.get("/api/v1/categories").json() == []
 

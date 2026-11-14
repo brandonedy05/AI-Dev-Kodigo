@@ -5,7 +5,7 @@ from fastapi import HTTPException, status
 from sqlmodel import Session, col, or_, select
 
 from app.models.product import Category, Product
-from app.schemas.product import CategoryCreate, ProductCreate, ProductUpdate
+from app.schemas.product import CategoryCreate, CategoryUpdate, ProductCreate, ProductUpdate
 
 
 def list_categories(session: Session, active_only: bool = True) -> list[Category]:
@@ -25,6 +25,45 @@ def create_category(session: Session, payload: CategoryCreate) -> Category:
             detail=f"Ya existe una categoría con el nombre '{payload.name}'.",
         )
     category = Category.model_validate(payload)
+    session.add(category)
+    session.commit()
+    session.refresh(category)
+    return category
+
+
+def update_category(session: Session, category_id: int, payload: CategoryUpdate) -> Category:
+    """Actualiza una categoría existente validando nombre único."""
+    category = session.get(Category, category_id)
+    if not category:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Categoría con ID {category_id} no encontrada.",
+        )
+    update_data = payload.model_dump(exclude_unset=True)
+    if "name" in update_data and update_data["name"] != category.name:
+        dup = session.exec(select(Category).where(Category.name == update_data["name"])).first()
+        if dup:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"Ya existe otra categoría con el nombre '{update_data['name']}'.",
+            )
+    for key, value in update_data.items():
+        setattr(category, key, value)
+    session.add(category)
+    session.commit()
+    session.refresh(category)
+    return category
+
+
+def deactivate_category(session: Session, category_id: int) -> Category:
+    """Desactiva una categoría (soft delete) sin eliminar productos asociados."""
+    category = session.get(Category, category_id)
+    if not category:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Categoría con ID {category_id} no encontrada.",
+        )
+    category.is_active = False
     session.add(category)
     session.commit()
     session.refresh(category)
