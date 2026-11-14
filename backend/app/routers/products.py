@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import Session
 
 from app.core.database import get_session
+from app.core.security import require_manager_if_authenticated
 from app.schemas.common import ErrorResponse
 from app.schemas.product import (
     CategoryCreate,
@@ -32,6 +33,7 @@ _UPLOAD_DIR = Path(__file__).resolve().parents[2] / "uploads" / "products"
     "/products/upload-image",
     response_model=ProductImageUploadResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_manager_if_authenticated)],
     summary="Subir imagen de producto",
     description="Recibe una imagen en base64, la guarda localmente en el servidor y devuelve su ruta pública.",
     responses={400: {"model": ErrorResponse, "description": "Formato o tamaño de imagen inválido."}},
@@ -82,6 +84,7 @@ def list_categories(
     "/categories",
     response_model=CategoryRead,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_manager_if_authenticated)],
     summary="Crear categoría",
     description="Registra una nueva categoría de productos.",
     responses={409: {"model": ErrorResponse, "description": "Nombre de categoría duplicado."}},
@@ -96,6 +99,7 @@ def create_category(
 @router.patch(
     "/categories/{category_id}",
     response_model=CategoryRead,
+    dependencies=[Depends(require_manager_if_authenticated)],
     summary="Actualizar categoría",
     description="Actualiza el nombre o descripción de una categoría existente.",
     responses={
@@ -114,6 +118,7 @@ def update_category(
 @router.delete(
     "/categories/{category_id}",
     response_model=CategoryRead,
+    dependencies=[Depends(require_manager_if_authenticated)],
     summary="Desactivar categoría",
     description="Desactiva una categoría (soft delete) sin borrar los productos vinculados.",
     responses={404: {"model": ErrorResponse, "description": "Categoría no encontrada."}},
@@ -165,6 +170,7 @@ def get_product(
     "/products",
     response_model=ProductRead,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_manager_if_authenticated)],
     summary="Crear producto",
     description="Registra un nuevo producto en el catálogo validando SKU único.",
     responses={
@@ -182,6 +188,7 @@ def create_product(
 @router.patch(
     "/products/{product_id}",
     response_model=ProductRead,
+    dependencies=[Depends(require_manager_if_authenticated)],
     summary="Actualizar producto",
     description="Actualiza parcialmente los datos, precio o stock de un producto.",
     responses={
@@ -200,6 +207,7 @@ def update_product(
 @router.delete(
     "/products/{product_id}",
     response_model=ProductRead,
+    dependencies=[Depends(require_manager_if_authenticated)],
     summary="Desactivar producto",
     description="Desactiva un producto del catálogo (soft delete) preservando el historial de ventas.",
     responses={404: {"model": ErrorResponse, "description": "Producto no encontrado."}},

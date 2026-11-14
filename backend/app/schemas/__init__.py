@@ -25,11 +25,20 @@ from app.schemas.report import (
     TopProductReportItem,
 )
 from app.schemas.sale import SaleCreate, SaleItemCreate, SaleItemRead, SaleRead
+from app.schemas.user import (
+    LoginRequest,
+    LoginResponse,
+    LoginUserOption,
+    UserCreate,
+    UserRead,
+    UserUpdate,
+)
 
 __all__ = [
     "ErrorResponse",
     "CategoryCreate",
     "CategoryRead",
+    "CategoryUpdate",
     "ProductCreate",
     "ProductUpdate",
     "ProductRead",
@@ -50,5 +59,11 @@ __all__ = [
     "SalesSummaryReport",
     "TopProductReportItem",
     "LowStockProductItem",
+    "UserCreate",
+    "UserUpdate",
+    "UserRead",
+    "LoginUserOption",
+    "LoginRequest",
+    "LoginResponse",
 ]
 

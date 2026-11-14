@@ -9,8 +9,10 @@ if __package__ is None or __package__ == "":
 from app.services.api_client import POSApiClient, POSApiError
 from app.theme import Colors, FONT_FAMILY
 from app.views.cash_register_view import CashRegisterView
+from app.views.login_view import LoginView
 from app.views.pos_terminal_view import POSTerminalView
 from app.views.secondary_views import CustomersView, ProductsView, ReportsView
+from app.views.users_view import UsersView
 
 
 def main(page: ft.Page) -> None:
@@ -30,6 +32,20 @@ def main(page: ft.Page) -> None:
         border_radius=99,
         bgcolor=Colors.CRIMSON_BG,
         content=ft.Text("Caja cerrada", size=12, weight=ft.FontWeight.BOLD, color=Colors.CRIMSON_TEXT),
+    )
+
+    session_badge_text = ft.Text("Sin sesión", size=12, weight=ft.FontWeight.W_600, color=Colors.ON_PRIMARY)
+    session_badge_icon = ft.Icon(ft.Icons.PERSON_OUTLINE, size=16, color=Colors.EMERALD)
+    session_badge = ft.Container(
+        padding=ft.Padding.symmetric(horizontal=12, vertical=6),
+        border_radius=99,
+        bgcolor="#1E293B",
+        border=ft.Border.all(1, "#334155"),
+        content=ft.Row(
+            tight=True,
+            spacing=6,
+            controls=[session_badge_icon, session_badge_text],
+        ),
     )
 
     def refresh_cash_badge() -> None:
@@ -53,26 +69,28 @@ def main(page: ft.Page) -> None:
     products_view = ProductsView(api=api, on_notify=notify)
     customers_view = CustomersView(api=api, on_notify=notify)
     reports_view = ReportsView(api=api)
+    users_view = UsersView(api=api, on_notify=notify)
 
-    views = [pos_view, cash_view, products_view, customers_view, reports_view]
+    all_nav_defs = [
+        ("Vender", ft.Icons.POINT_OF_SALE, pos_view, {"CAJERO", "ENCARGADO"}),
+        ("Caja", ft.Icons.ACCOUNT_BALANCE_WALLET, cash_view, {"CAJERO", "ENCARGADO"}),
+        ("Productos", ft.Icons.INVENTORY_2, products_view, {"ENCARGADO"}),
+        ("Clientes", ft.Icons.PEOPLE, customers_view, {"CAJERO", "ENCARGADO"}),
+        ("Reportes", ft.Icons.BAR_CHART, reports_view, {"ENCARGADO"}),
+        ("Usuarios", ft.Icons.MANAGE_ACCOUNTS, users_view, {"ENCARGADO"}),
+    ]
+
+    active_tabs: list[tuple[str, ft.IconData, ft.Control]] = []
+    selected_idx = 0
     body_host = ft.Container(expand=True, content=pos_view)
 
-    nav_items = [
-        ("Vender", ft.Icons.POINT_OF_SALE),
-        ("Caja", ft.Icons.ACCOUNT_BALANCE_WALLET),
-        ("Productos", ft.Icons.INVENTORY_2),
-        ("Clientes", ft.Icons.PEOPLE),
-        ("Reportes", ft.Icons.BAR_CHART),
-    ]
-    selected_idx = 0
-    sidebar_col = ft.Column(spacing=8, horizontal_alignment=ft.CrossAxisAlignment.CENTER)
-
     def render_sidebar() -> None:
-        sidebar_col.controls.clear()
-        for idx, (label, icon) in enumerate(nav_items):
+        nav_controls: list[ft.Control] = []
+        for idx, (label, icon, _) in enumerate(active_tabs):
             active = idx == selected_idx
-            sidebar_col.controls.append(
+            nav_controls.append(
                 ft.Container(
+                    key=f"nav-{label}-{idx}",
                     width=80,
                     padding=ft.Padding.symmetric(vertical=12, horizontal=6),
                     border_radius=12,
@@ -94,23 +112,46 @@ def main(page: ft.Page) -> None:
                     ),
                 )
             )
+        sidebar.content = ft.Column(
+            key=f"sidebar-{len(active_tabs)}-{selected_idx}",
+            spacing=8,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            controls=nav_controls,
+        )
 
     def select_tab(idx: int) -> None:
         nonlocal selected_idx
+        if idx < 0 or idx >= len(active_tabs):
+            return
         selected_idx = idx
         render_sidebar()
-        body_host.content = views[idx]
+        _, _, target_view = active_tabs[idx]
+        body_host.content = target_view
         page.update()
-        views[idx].refresh()
+        target_view.refresh()
 
-    render_sidebar()
     sidebar = ft.Container(
         width=98,
         padding=ft.Padding.symmetric(vertical=14, horizontal=8),
         bgcolor=Colors.NAVY,
         border=ft.Border.only(top=ft.BorderSide(1, "#1E293B")),
-        content=sidebar_col,
+        content=ft.Column(spacing=8, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
     )
+
+    root_host = ft.Container(expand=True)
+
+    def handle_logout(_=None) -> None:
+        nonlocal active_tabs, selected_idx
+        api.logout()
+        active_tabs = []
+        selected_idx = 0
+        sidebar.content = ft.Column(spacing=8, horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+        body_host.content = ft.Container()
+        login_view.selected_user_id = None
+        root_host.content = login_view
+        page.update()
+        login_view.refresh()
+        notify("Sesión cerrada correctamente.", Colors.NAVY)
 
     header = ft.Container(
         height=60,
@@ -134,28 +175,64 @@ def main(page: ft.Page) -> None:
                         ft.Text("POS", size=12, weight=ft.FontWeight.BOLD, color=Colors.EMERALD),
                     ],
                 ),
-                cash_badge,
+                ft.Row(
+                    spacing=10,
+                    controls=[
+                        session_badge,
+                        cash_badge,
+                        ft.IconButton(
+                            ft.Icons.LOGOUT,
+                            icon_color="#E2E8F0",
+                            tooltip="Cerrar sesión",
+                            on_click=handle_logout,
+                        ),
+                    ],
+                ),
             ],
         ),
     )
 
-    page.add(
-        ft.Column(
-            expand=True,
-            spacing=0,
-            controls=[
-                header,
-                ft.Row(
-                    expand=True,
-                    spacing=0,
-                    controls=[sidebar, body_host],
-                ),
-            ],
-        )
+    app_shell = ft.Column(
+        expand=True,
+        spacing=0,
+        controls=[
+            header,
+            ft.Row(
+                expand=True,
+                spacing=0,
+                controls=[sidebar, body_host],
+            ),
+        ],
     )
 
-    refresh_cash_badge()
-    pos_view.refresh()
+    def handle_login_success(user: dict) -> None:
+        nonlocal active_tabs, selected_idx
+        role = user.get("role", "CAJERO")
+        role_label = "Encargado" if role == "ENCARGADO" else "Cajero"
+        session_badge_icon.name = ft.Icons.ADMIN_PANEL_SETTINGS if role == "ENCARGADO" else ft.Icons.PERSON
+        session_badge_text.value = f"{user.get('name', 'Usuario')} · {role_label}"
+
+        if hasattr(cash_view, "cashier_field"):
+            cash_view.cashier_field.value = user.get("name", "")
+
+        active_tabs = [
+            (label, icon, view)
+            for label, icon, view, allowed_roles in all_nav_defs
+            if role in allowed_roles
+        ]
+        selected_idx = 0
+        render_sidebar()
+        body_host.content = active_tabs[0][2]
+        root_host.content = app_shell
+        page.update()
+        refresh_cash_badge()
+        active_tabs[0][2].refresh()
+        notify(f"Bienvenido, {user.get('name', '')} ({role_label}).", Colors.EMERALD_DARK)
+
+    login_view = LoginView(api=api, on_login_success=handle_login_success)
+    root_host.content = login_view
+    page.add(root_host)
+    login_view.refresh()
 
 
 if __name__ == "__main__":

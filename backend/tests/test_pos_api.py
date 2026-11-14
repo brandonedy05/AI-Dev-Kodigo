@@ -208,3 +208,89 @@ def test_full_pos_flow(client: TestClient):
     assert cat_del.json()["is_active"] is False
     assert client.get("/api/v1/categories").json() == []
 
+
+def test_auth_users_and_roles(client: TestClient):
+    from app.core.security import hash_password, verify_password
+
+    # 1. Verificar hashing con sal única por usuario
+    h1 = hash_password("clave1234")
+    h2 = hash_password("clave1234")
+    assert h1 != h2
+    assert h1.startswith("pbkdf2_sha256$")
+    assert verify_password("clave1234", h1) is True
+    assert verify_password("incorrecta", h1) is False
+
+    # 2. Listar opciones iniciales de login (Encargado y Cajero)
+    opts_res = client.get("/api/v1/auth/options")
+    assert opts_res.status_code == 200
+    names = {u["name"] for u in opts_res.json()}
+    assert {"Encargado", "Cajero"}.issubset(names)
+
+    # 3. Sin token -> 401 en /users
+    assert client.get("/api/v1/users").status_code == 401
+
+    # 4. Login como Encargado y verificar /auth/me
+    mgr_login = client.post("/api/v1/auth/login", json={"name": "Encargado", "password": "admin123"})
+    assert mgr_login.status_code == 200
+    mgr_data = mgr_login.json()
+    mgr_headers = {"Authorization": f"Bearer {mgr_data['access_token']}"}
+    assert mgr_data["user"]["role"] == "ENCARGADO"
+
+    me_res = client.get("/api/v1/auth/me", headers=mgr_headers)
+    assert me_res.status_code == 200
+    assert me_res.json()["name"] == "Encargado"
+
+    # 5. CRUD de usuarios por Encargado
+    create_res = client.post(
+        "/api/v1/users",
+        json={"name": "Sofía", "password": "sofia2026", "role": "CAJERO"},
+        headers=mgr_headers,
+    )
+    assert create_res.status_code == 201
+    sofia = create_res.json()
+    assert "password_hash" not in sofia
+    assert sofia["role"] == "CAJERO"
+
+    upd_res = client.patch(
+        f"/api/v1/users/{sofia['id']}",
+        json={"name": "Sofía M.", "password": "nuevo2026"},
+        headers=mgr_headers,
+    )
+    assert upd_res.status_code == 200
+    assert upd_res.json()["name"] == "Sofía M."
+
+    # Login con nueva contraseña
+    sofia_login = client.post(
+        "/api/v1/auth/login",
+        json={"user_id": sofia["id"], "password": "nuevo2026"},
+    )
+    assert sofia_login.status_code == 200
+    cashier_headers = {"Authorization": f"Bearer {sofia_login.json()['access_token']}"}
+
+    # 6. Permisos de Cajero: bloqueado en usuarios, productos (escritura) y reportes
+    assert client.get("/api/v1/users", headers=cashier_headers).status_code == 403
+    assert client.get("/api/v1/reports/sales-summary", headers=cashier_headers).status_code == 403
+    assert client.post(
+        "/api/v1/categories",
+        json={"name": "Prohibida"},
+        headers=cashier_headers,
+    ).status_code == 403
+
+    # Cajero sí puede consultar productos, abrir caja y crear clientes
+    assert client.get("/api/v1/products", headers=cashier_headers).status_code == 200
+    assert client.post(
+        "/api/v1/customers",
+        json={"full_name": "Cliente Cajero", "customer_category": "PERSONAL", "document_type": "CF"},
+        headers=cashier_headers,
+    ).status_code == 201
+
+    # 7. Soft-delete de usuario por Encargado impide nuevo login
+    del_res = client.delete(f"/api/v1/users/{sofia['id']}", headers=mgr_headers)
+    assert del_res.status_code == 200
+    assert del_res.json()["is_active"] is False
+    inactive_login = client.post(
+        "/api/v1/auth/login",
+        json={"user_id": sofia["id"], "password": "nuevo2026"},
+    )
+    assert inactive_login.status_code == 403
+

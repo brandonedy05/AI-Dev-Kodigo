@@ -23,6 +23,8 @@ class POSApiClient:
         parsed = urlparse(self.base_url)
         self.origin = f"{parsed.scheme}://{parsed.netloc}" if parsed.scheme and parsed.netloc else ""
         self._client = httpx.Client(base_url=self.base_url, timeout=10.0)
+        self.auth_token: Optional[str] = None
+        self.current_user: Optional[dict[str, Any]] = None
 
     def resolve_media_url(self, path_or_url: Optional[str]) -> Optional[str]:
         if not path_or_url:
@@ -32,7 +34,10 @@ class POSApiClient:
         return path_or_url
 
     def _request(self, method: str, path: str, **kwargs: Any) -> Any:
-        response = self._client.request(method, path, **kwargs)
+        headers = dict(kwargs.pop("headers", {}) or {})
+        if self.auth_token and "Authorization" not in headers:
+            headers["Authorization"] = f"Bearer {self.auth_token}"
+        response = self._client.request(method, path, headers=headers, **kwargs)
         if response.status_code >= 400:
             try:
                 detail = response.json().get("detail", response.text)
@@ -152,4 +157,43 @@ class POSApiClient:
 
     def get_low_stock(self) -> list[dict[str, Any]]:
         return self._request("GET", "/reports/low-stock")
+
+    # --- Autenticación y Usuarios ---
+    def get_login_options(self) -> list[dict[str, Any]]:
+        return self._request("GET", "/auth/options")
+
+    def login(
+        self,
+        password: str,
+        user_id: Optional[int] = None,
+        name: Optional[str] = None,
+    ) -> dict[str, Any]:
+        payload: dict[str, Any] = {"password": password}
+        if user_id is not None:
+            payload["user_id"] = user_id
+        if name is not None:
+            payload["name"] = name
+        data = self._request("POST", "/auth/login", json=payload)
+        self.auth_token = data.get("access_token")
+        self.current_user = data.get("user")
+        return data
+
+    def logout(self) -> None:
+        self.auth_token = None
+        self.current_user = None
+
+    def get_me(self) -> dict[str, Any]:
+        return self._request("GET", "/auth/me")
+
+    def get_users(self, include_inactive: bool = True) -> list[dict[str, Any]]:
+        return self._request("GET", "/users", params={"include_inactive": str(include_inactive).lower()})
+
+    def create_user(self, name: str, password: str, role: str) -> dict[str, Any]:
+        return self._request("POST", "/users", json={"name": name, "password": password, "role": role})
+
+    def update_user(self, user_id: int, payload: dict[str, Any]) -> dict[str, Any]:
+        return self._request("PATCH", f"/users/{user_id}", json=payload)
+
+    def delete_user(self, user_id: int) -> dict[str, Any]:
+        return self._request("DELETE", f"/users/{user_id}")
 

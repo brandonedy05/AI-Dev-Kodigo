@@ -81,6 +81,11 @@ def init_db() -> None:
                 if col_name not in sale_cols:
                     conn.execute(text(f"ALTER TABLE sales ADD COLUMN {col_name} {col_def}"))
 
+    from app.services.user_service import ensure_default_users
+
+    with Session(engine) as session:
+        ensure_default_users(session)
+
 
 def get_session() -> Generator[Session, None, None]:
     """Dependencia FastAPI que provee una sesión de base de datos por petición."""
