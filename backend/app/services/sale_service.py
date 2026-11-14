@@ -69,7 +69,12 @@ def create_sale(session: Session, payload: SaleCreate) -> Sale:
     now = datetime.now(timezone.utc)
     for item in payload.items:
         product = products_by_id[item.product_id]
-        line_total = (product.price * item.quantity).quantize(Decimal("0.01"))
+        unit_price = (
+            product.wholesale_price
+            if item.use_wholesale and product.wholesale_price is not None
+            else product.price
+        )
+        line_total = (unit_price * item.quantity).quantize(Decimal("0.01"))
         subtotal += line_total
         product.stock -= item.quantity
         product.updated_at = now
@@ -79,7 +84,7 @@ def create_sale(session: Session, payload: SaleCreate) -> Sale:
                 product_id=product.id,  # type: ignore[arg-type]
                 product_name=product.name,
                 quantity=item.quantity,
-                unit_price=product.price,
+                unit_price=unit_price,
                 line_total=line_total,
             )
         )
@@ -103,11 +108,15 @@ def create_sale(session: Session, payload: SaleCreate) -> Sale:
         else Decimal("0.00")
     )
 
+    is_card = payload.payment_method == PaymentMethod.CARD
     sale = Sale(
         ticket_number=_generate_ticket_number(),
         session_id=cash_session.id,  # type: ignore[arg-type]
         customer_id=payload.customer_id,
         payment_method=payload.payment_method,
+        card_bank=payload.card_bank.strip() if is_card and payload.card_bank else None,
+        card_type=payload.card_type.strip().upper() if is_card and payload.card_type else None,
+        card_auth_number=payload.card_auth_number.strip() if is_card and payload.card_auth_number else None,
         subtotal=subtotal,
         discount=payload.discount,
         total=total,

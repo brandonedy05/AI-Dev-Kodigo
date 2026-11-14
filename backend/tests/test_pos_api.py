@@ -31,7 +31,21 @@ def client_fixture(monkeypatch):
 
 
 def test_full_pos_flow(client: TestClient):
-    # 1. Crear categoría y producto
+    # 1. Subir imagen de producto, crear categoría y producto
+    import base64
+
+    tiny_png = base64.b64encode(
+        b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x02\x00\x00\x00\x90wS\xde"
+    ).decode("ascii")
+    up_res = client.post(
+        "/api/v1/products/upload-image",
+        json={"filename": "coca.png", "content_base64": tiny_png},
+    )
+    assert up_res.status_code == 201
+    uploaded_url = up_res.json()["image_url"]
+    assert uploaded_url.startswith("/uploads/products/")
+    assert client.get(uploaded_url).status_code == 200
+
     cat_res = client.post("/api/v1/categories", json={"name": "Bebidas"})
     assert cat_res.status_code == 201
     cat_id = cat_res.json()["id"]
@@ -41,26 +55,39 @@ def test_full_pos_flow(client: TestClient):
         json={
             "sku": "BEB-001",
             "name": "Coca-Cola 600ml",
+            "image_url": uploaded_url,
             "price": "1.25",
+            "wholesale_price": "1.00",
             "stock": 10,
             "min_stock": 3,
             "category_id": cat_id,
         },
     )
     assert prod_res.status_code == 201
+    assert prod_res.json()["image_url"] == uploaded_url
     prod_id = prod_res.json()["id"]
 
-    # 2. Registrar cliente
+    # 2. Registrar cliente (con campos de El Salvador)
     cust_res = client.post(
         "/api/v1/customers",
         json={
             "full_name": "María Hernández",
+            "customer_category": "TAXPAYER",
             "document_type": "DUI",
             "document_number": "04512984-1",
-            "phone": "7890-1234",
+            "nrc": "284910-3",
+            "business_name": "Comercial Hernández S.A. de C.V.",
+            "department": "San Salvador",
+            "municipality": "San Salvador Centro",
+            "district": "San Salvador",
+            "address": "Col. Escalón, Calle El Mirador #14",
+            "phone": "+503 7890-1234",
+            "credit_limit": "500.00",
+            "credit_days": 30,
         },
     )
     assert cust_res.status_code == 201
+    assert cust_res.json()["nrc"] == "284910-3"
     cust_id = cust_res.json()["id"]
 
     # 3. Intentar vender con caja cerrada debe fallar con 409
@@ -112,6 +139,25 @@ def test_full_pos_flow(client: TestClient):
     prod_after = client.get(f"/api/v1/products/{prod_id}").json()
     assert prod_after["stock"] == 8
 
+    # 6b. Registrar venta por mayoreo con tarjeta (1 unidad * 1.00 = 1.00)
+    wholesale_res = client.post(
+        "/api/v1/sales",
+        json={
+            "customer_id": cust_id,
+            "payment_method": "CARD",
+            "card_bank": "Banco Agrícola",
+            "card_type": "CREDITO",
+            "card_auth_number": "482910",
+            "amount_paid": "1.00",
+            "items": [{"product_id": prod_id, "quantity": 1, "use_wholesale": True}],
+        },
+    )
+    assert wholesale_res.status_code == 201
+    assert Decimal(wholesale_res.json()["total"]) == Decimal("1.00")
+    assert wholesale_res.json()["card_bank"] == "Banco Agrícola"
+    assert wholesale_res.json()["card_type"] == "CREDITO"
+    assert wholesale_res.json()["card_auth_number"] == "482910"
+
     # 7. Movimiento manual y cierre de caja
     mov_res = client.post(
         "/api/v1/cash-register/movements",
@@ -130,12 +176,121 @@ def test_full_pos_flow(client: TestClient):
     assert close_res.status_code == 200
     assert Decimal(close_res.json()["difference"]) == Decimal("0.00")
 
-    # 8. Reportes
+    # 8. Reportes (1 venta detalle 2.50 + 1 venta mayoreo 1.00 = 3.50)
     rep_summary = client.get("/api/v1/reports/sales-summary").json()
-    assert rep_summary["total_transactions"] == 1
-    assert Decimal(rep_summary["total_revenue"]) == Decimal("2.50")
+    assert rep_summary["total_transactions"] == 2
+    assert Decimal(rep_summary["total_revenue"]) == Decimal("3.50")
 
     top_prods = client.get("/api/v1/reports/top-products").json()
     assert len(top_prods) == 1
-    assert top_prods[0]["units_sold"] == 2
+    assert top_prods[0]["units_sold"] == 3
+
+    # 9. Editar y desactivar producto (soft delete)
+    patch_res = client.patch(
+        f"/api/v1/products/{prod_id}",
+        json={"cost_price": "0.85", "location": "Pasillo 1", "supplier_name": "Distribuidora Sur"},
+    )
+    assert patch_res.status_code == 200
+    assert patch_res.json()["location"] == "Pasillo 1"
+
+    del_res = client.delete(f"/api/v1/products/{prod_id}")
+    assert del_res.status_code == 200
+    assert del_res.json()["is_active"] is False
+    assert client.get("/api/v1/products").json() == []
+
+    # 10. Editar y desactivar categoría (soft delete)
+    cat_patch = client.patch(f"/api/v1/categories/{cat_id}", json={"name": "Bebidas Frías"})
+    assert cat_patch.status_code == 200
+    assert cat_patch.json()["name"] == "Bebidas Frías"
+
+    cat_del = client.delete(f"/api/v1/categories/{cat_id}")
+    assert cat_del.status_code == 200
+    assert cat_del.json()["is_active"] is False
+    assert client.get("/api/v1/categories").json() == []
+
+
+def test_auth_users_and_roles(client: TestClient):
+    from app.core.security import hash_password, verify_password
+
+    # 1. Verificar hashing con sal única por usuario
+    h1 = hash_password("clave1234")
+    h2 = hash_password("clave1234")
+    assert h1 != h2
+    assert h1.startswith("pbkdf2_sha256$")
+    assert verify_password("clave1234", h1) is True
+    assert verify_password("incorrecta", h1) is False
+
+    # 2. Listar opciones iniciales de login (Encargado y Cajero)
+    opts_res = client.get("/api/v1/auth/options")
+    assert opts_res.status_code == 200
+    names = {u["name"] for u in opts_res.json()}
+    assert {"Encargado", "Cajero"}.issubset(names)
+
+    # 3. Sin token -> 401 en /users
+    assert client.get("/api/v1/users").status_code == 401
+
+    # 4. Login como Encargado y verificar /auth/me
+    mgr_login = client.post("/api/v1/auth/login", json={"name": "Encargado", "password": "admin123"})
+    assert mgr_login.status_code == 200
+    mgr_data = mgr_login.json()
+    mgr_headers = {"Authorization": f"Bearer {mgr_data['access_token']}"}
+    assert mgr_data["user"]["role"] == "ENCARGADO"
+
+    me_res = client.get("/api/v1/auth/me", headers=mgr_headers)
+    assert me_res.status_code == 200
+    assert me_res.json()["name"] == "Encargado"
+
+    # 5. CRUD de usuarios por Encargado
+    create_res = client.post(
+        "/api/v1/users",
+        json={"name": "Sofía", "password": "sofia2026", "role": "CAJERO"},
+        headers=mgr_headers,
+    )
+    assert create_res.status_code == 201
+    sofia = create_res.json()
+    assert "password_hash" not in sofia
+    assert sofia["role"] == "CAJERO"
+
+    upd_res = client.patch(
+        f"/api/v1/users/{sofia['id']}",
+        json={"name": "Sofía M.", "password": "nuevo2026"},
+        headers=mgr_headers,
+    )
+    assert upd_res.status_code == 200
+    assert upd_res.json()["name"] == "Sofía M."
+
+    # Login con nueva contraseña
+    sofia_login = client.post(
+        "/api/v1/auth/login",
+        json={"user_id": sofia["id"], "password": "nuevo2026"},
+    )
+    assert sofia_login.status_code == 200
+    cashier_headers = {"Authorization": f"Bearer {sofia_login.json()['access_token']}"}
+
+    # 6. Permisos de Cajero: bloqueado en usuarios, productos (escritura) y reportes
+    assert client.get("/api/v1/users", headers=cashier_headers).status_code == 403
+    assert client.get("/api/v1/reports/sales-summary", headers=cashier_headers).status_code == 403
+    assert client.post(
+        "/api/v1/categories",
+        json={"name": "Prohibida"},
+        headers=cashier_headers,
+    ).status_code == 403
+
+    # Cajero sí puede consultar productos, abrir caja y crear clientes
+    assert client.get("/api/v1/products", headers=cashier_headers).status_code == 200
+    assert client.post(
+        "/api/v1/customers",
+        json={"full_name": "Cliente Cajero", "customer_category": "PERSONAL", "document_type": "CF"},
+        headers=cashier_headers,
+    ).status_code == 201
+
+    # 7. Soft-delete de usuario por Encargado impide nuevo login
+    del_res = client.delete(f"/api/v1/users/{sofia['id']}", headers=mgr_headers)
+    assert del_res.status_code == 200
+    assert del_res.json()["is_active"] is False
+    inactive_login = client.post(
+        "/api/v1/auth/login",
+        json={"user_id": sofia["id"], "password": "nuevo2026"},
+    )
+    assert inactive_login.status_code == 403
 

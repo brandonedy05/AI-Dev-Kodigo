@@ -1,33 +1,43 @@
-"""Tokens de diseño de Mi Tiendita Fácil extraídos de docs/DESIGN_SYSTEM.md."""
+"""Tokens visuales de Mi Tiendita Fácil basados en docs/DESIGN_SYSTEM.md y Stitch."""
+
+import flet as ft
 
 
 class Colors:
-    SURFACE = "#f8f9ff"
-    SURFACE_CONTAINER_LOW = "#eff4ff"
-    SURFACE_CONTAINER = "#e5eeff"
-    SURFACE_CONTAINER_HIGH = "#dce9ff"
-    SURFACE_CONTAINER_LOWEST = "#ffffff"
+    # Superficies y neutros
+    CANVAS = "#F8FAFC"
+    SURFACE = "#FFFFFF"
+    SURFACE_ALT = "#F1F5F9"
+    BORDER = "#E2E8F0"
+    BORDER_STRONG = "#CBD5E1"
 
-    ON_SURFACE = "#0b1c30"
-    ON_SURFACE_VARIANT = "#3c4a42"
-    OUTLINE = "#6c7a71"
-    OUTLINE_VARIANT = "#bbcabf"
+    # Texto
+    TEXT_PRIMARY = "#0F172A"
+    TEXT_SECONDARY = "#475569"
+    TEXT_MUTED = "#64748B"
 
-    PRIMARY = "#006c49"
-    ON_PRIMARY = "#ffffff"
-    PRIMARY_CONTAINER = "#10b981"
-    ON_PRIMARY_CONTAINER = "#00422b"
+    # Marca y acciones
+    NAVY = "#0F172A"
+    EMERALD = "#10B981"
+    EMERALD_DARK = "#059669"
+    EMERALD_SOFT = "#ECFDF5"
+    ON_PRIMARY = "#FFFFFF"
 
-    SECONDARY = "#565e74"
-    SECONDARY_CONTAINER = "#dae2fd"
+    # Alertas y estados
+    AMBER = "#F59E0B"
+    AMBER_BG = "#FEF3C7"
+    AMBER_TEXT = "#D97706"
 
-    TERTIARY = "#855300"
-    TERTIARY_CONTAINER = "#e29100"
-    TERTIARY_FIXED = "#ffddb8"
-
-    ERROR = "#ba1a1a"
-    ERROR_CONTAINER = "#ffdad6"
+    CRIMSON = "#EF4444"
+    CRIMSON_BG = "#FEE2E2"
+    CRIMSON_TEXT = "#DC2626"
 
 
 FONT_FAMILY = "Plus Jakarta Sans"
 
+CARD_SHADOW = ft.BoxShadow(
+    spread_radius=0,
+    blur_radius=10,
+    color="#0F172A12",
+    offset=ft.Offset(0, 3),
+)

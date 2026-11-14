@@ -45,11 +45,25 @@ class Product(SQLModel, table=True):
     barcode: Optional[str] = Field(default=None, max_length=64, index=True)
     name: str = Field(max_length=150, index=True)
     description: Optional[str] = Field(default=None, max_length=500)
+    image_url: Optional[str] = Field(default=None, max_length=500)
+    unit_of_measure: str = Field(default="Unidad", max_length=30)
     price: Decimal = Field(
         sa_column=Column(Numeric(12, 2), nullable=False),
     )
+    cost_price: Decimal = Field(
+        default=Decimal("0.00"),
+        sa_column=Column(Numeric(12, 2), nullable=False),
+    )
+    wholesale_price: Optional[Decimal] = Field(
+        default=None,
+        sa_column=Column(Numeric(12, 2), nullable=True),
+    )
+    applies_iva: bool = Field(default=True)
     stock: int = Field(default=0)
     min_stock: int = Field(default=5)
+    location: Optional[str] = Field(default=None, max_length=80)
+    supplier_name: Optional[str] = Field(default=None, max_length=120)
+    supplier_code: Optional[str] = Field(default=None, max_length=60)
     is_active: bool = Field(default=True, index=True)
     category_id: Optional[int] = Field(
         default=None,

@@ -6,9 +6,11 @@ from app.models.enums import (
     DocumentType,
     PaymentMethod,
     SaleStatus,
+    UserRole,
 )
 from app.models.product import Category, Product
 from app.models.sale import Sale, SaleItem
+from app.models.user import User
 
 __all__ = [
     "Category",
@@ -18,10 +20,12 @@ __all__ = [
     "CashMovement",
     "Sale",
     "SaleItem",
+    "User",
     "DocumentType",
     "CashSessionStatus",
     "CashMovementType",
     "PaymentMethod",
     "SaleStatus",
+    "UserRole",
 ]
 

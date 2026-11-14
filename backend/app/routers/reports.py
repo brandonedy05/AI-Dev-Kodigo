@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlmodel import Session
 
 from app.core.database import get_session
+from app.core.security import require_manager_if_authenticated
 from app.schemas.common import ErrorResponse
 from app.schemas.report import (
     LowStockProductItem,
@@ -13,7 +14,11 @@ from app.schemas.report import (
 )
 from app.services import report_service
 
-router = APIRouter(prefix="/reports", tags=["Reportes"])
+router = APIRouter(
+    prefix="/reports",
+    tags=["Reportes"],
+    dependencies=[Depends(require_manager_if_authenticated)],
+)
 
 
 def _resolve_dates(start_date: Optional[date], end_date: Optional[date]) -> tuple[date, date]:

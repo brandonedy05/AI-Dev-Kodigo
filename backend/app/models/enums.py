@@ -39,3 +39,10 @@ class SaleStatus(str, Enum):
     COMPLETED = "COMPLETED"
     CANCELLED = "CANCELLED"
 
+
+class UserRole(str, Enum):
+    """Roles de acceso del sistema POS."""
+
+    CAJERO = "CAJERO"
+    ENCARGADO = "ENCARGADO"
+

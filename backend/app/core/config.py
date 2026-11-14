@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     DB_ECHO: bool = False
 
     CORS_ORIGINS: list[str] = ["*"]
+    AUTH_SECRET_KEY: str = "dev-pos-secret-key-change-in-prod"
+    AUTH_TOKEN_TTL_MINUTES: int = 720
 
     model_config = SettingsConfigDict(
         env_file=".env",
